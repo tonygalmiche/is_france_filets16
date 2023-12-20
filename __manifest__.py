@@ -19,10 +19,10 @@ InfoSaône - Module Odoo 16 pour France Filets (anti-chute-pro)
         'account',
         'purchase',
         'attachment_indexation',
-        # "base_rest",                    # Pour API Rest Akyos
-        # "base_rest_datamodel",          # Pour API Rest Akyos
-        # "base_rest_auth_user_service",  # Pour API Rest Akyos
-        # "component",                    # Pour API Rest Akyos
+        "base_rest",                    # Pour API Rest Akyos https://github.com/OCA/rest-framework
+        "base_rest_datamodel",          # Pour API Rest Akyos
+        # "base_rest_auth_user_service",  # Pour API Rest Akyos unported => https://github.com/OCA/rest-framework
+        "component",                    # Pour API Rest Akyos
 ],
     'data' : [
         'security/res.groups.xml',
