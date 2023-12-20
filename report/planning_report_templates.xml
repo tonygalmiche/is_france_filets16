@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="is_planning_external_layout_standard">
+        <t t-set="company" t-value="res_company"/>
+        <div t-attf-class="header" t-att-style="report_header_style">
+            <div class="row">
+                <div class="col-3">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 100px;" alt="Logo"/>
+                </div>
+                <div class="col-9 text-right" style="font-size:11pt">
+                    <h2 style="font-size:18pt">Planning du <span t-field="o.date_debut"/> au <span t-field="o.date_fin"/></h2>
+                    <b><div t-field="company.name"/></b>
+                    <div><span t-field="company.street"/> - <span t-field="company.zip"/> <span t-field="company.city"/></div>
+                    <div>
+                        Tél : <span t-field="company.phone"/> - Portable : <span t-field="company.partner_id.mobile"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div t-attf-class="article o_report_layout_standard" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+        <div t-attf-class="footer o_standard_footer">
+            <div class="text-right" style="border-top: 1px solid black;font-size:10pt">
+                 <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="is_planning_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-call="is_france_filets16.is_planning_external_layout_standard"><t t-out="0"/></t>
+    </template>
+
+    <template id="is_planning_report_document">
+        <t t-call="is_france_filets16.is_planning_external_layout">
+            <div class="page">
+                <style>
+                    th{
+                        padding:2pt;
+                        font-size:8pt;
+                    }
+                    td{
+                        padding:2pt;
+                        font-size:9pt
+                    }
+                </style>
+                <t t-if="not o.equipe_id">
+                    <table style="border:1px solid black; width:100%">
+                        <thead>
+                            <tr>
+                                <th style="border:1px solid black;text-align:left">Equipe</th>
+                                <t t-foreach="o.get_dates()" t-as="d">
+                                    <th style="border:1px solid black;text-align:center" t-esc="d"/>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.get_equipes()" t-as="e">
+                                <tr>
+                                    <td style="border:1px solid black;"><span t-field="e.name"/></td>
+                                    <t t-foreach="o.get_dates()" t-as="d">
+                                        <t t-set="absence" t-value="o.get_absence(e,d)"/>
+                                        <t t-set="style" t-value="'border:1px solid black'" />
+                                        <t t-if="absence">
+                                            <t t-set="style" t-value="'border:1px solid black;background-color:Tan'" />
+                                        </t>
+                                        <td t-att-style="style">
+                                            <t t-set="message" t-value="o.get_message(e,d)"/>
+                                            <t t-if="message">
+                                                <b><div style="background-color:Orange" t-raw="message"/></b>
+                                            </t>
+                                            <b><span t-esc="absence"/></b>
+                                            <t t-foreach="o.get_chantiers(e,d)" t-as="c">
+                                                <div t-raw="c"/>
+                                            </t>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <div style="page-break-after:always;" />
+                </t>
+                <t t-foreach="o.get_equipes()" t-as="e">
+                    <t t-set="test" t-value="1"/>
+                    <t t-if="o.equipe_id">
+                        <t t-if="o.equipe_id!=e">
+                            <t t-set="test" t-value="0"/>
+                        </t>
+                    </t>
+                    <t t-if="test">
+                        <table style="border:1px solid black; width:100%">
+                            <thead>
+                                <tr>
+                                    <th style="border:1px solid black;text-align:left">Equipe</th>
+                                    <t t-foreach="o.get_dates()" t-as="d">
+                                        <th style="border:1px solid black;text-align:center" t-esc="d"/>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="border:1px solid black;"><span t-field="e.name"/></td>
+                                    <t t-foreach="o.get_dates()" t-as="d">
+                                        <t t-set="absence" t-value="o.get_absence(e,d)"/>
+                                        <t t-set="style" t-value="'border:1px solid black'" />
+                                        <t t-if="absence">
+                                            <t t-set="style" t-value="'border:1px solid black;background-color:Tan'" />
+                                        </t>
+                                        <td t-att-style="style">
+                                            <t t-set="message" t-value="o.get_message(e,d)"/>
+                                            <t t-if="message">
+                                                <b><div style="background-color:Orange" t-raw="message"/></b>
+                                            </t>
+                                            <b><span t-esc="absence"/></b>
+                                            <t t-foreach="o.get_chantiers(e,d)" t-as="c">
+                                                <div t-raw="c"/>
+                                            </t>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="page-break-after:always;" />
+                    </t>
+                </t>
+            </div>
+        </t>
+    </template>
+    
+    <template id="is_planning_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="is_france_filets16.is_planning_report_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

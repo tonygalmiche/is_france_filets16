@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="is_controle_gestion_action_server" model="ir.actions.server">
+            <field name="name">Initialiser tableau contrôle de gestion</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">action = records.init_controle_gestion_action()</field>
+        </record>
+        <record id="commande_facturee_sale_order_action_server" model="ir.actions.server">
+            <field name="name">Forcer entièrement facturé</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">action = records.forcer_entierement_facture_action()</field>
+        </record>
+        <record id="is_sale_order_form" model="ir.ui.view">
+            <field name="name">is_sale_order_form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet[1]" position="inside">
+                    <style>
+                        .o_form_view .o_form_sheet_bg > .o_form_sheet{
+                            max-width: 1800px;
+                        }
+                        .o_form_label{
+                            white-space: nowrap;
+                        }
+
+                        .o_form_view .o_td_label .o_form_label:not(.o_status), .o_form_view .o_checkbox_optional_field > .o_form_label {
+                            min-height: 0px;
+                        }
+                        body {
+                            line-height: 1;
+                        }
+                    </style>
+                </xpath>
+                <field name="partner_id" position="after">
+                    <field name="is_type_partenaire"/>
+                    <field name="is_region_id"/>
+                    <field name="is_classification"/>
+                    <field name="is_secteur_activite_id"/>
+                    <field name="is_contact_id" domain="[('parent_id','=',partner_id)]"/>
+                    <field name="is_nom_chantier"/>
+                    <field name="is_superficie"/>
+                    <field name="is_superficie_m2"/>
+                    <field name="is_ca_m2"/>
+                    <field name="is_hauteur"/>
+                    <field name="is_nb_interventions"/>
+                    <field name="is_type_chantier"/>
+                    <field name="is_type_prestation_id"/>
+                    <field name="is_nacelle_id"/>
+                    <field name="is_ca_nacelle"/>
+                    <field name="is_ca_hors_nacelle"/>
+                    <field name="is_suivi"/>
+                </field>
+                <field name="payment_term_id" position="after">
+                    <field name="is_utilisateur_reserve"/>
+                    <field name="is_montant_regle_en_ligne"/>
+                    <field name="is_date_previsionnelle"/>
+                    <field name="is_distance_chantier"/>
+                    <field name="is_num_ancien_devis"/>
+                    <field name="is_ref_client"/>
+                    <field name="is_motif_archivage_id" states="draft,sent"/>
+                    <field name="is_motif_archivage"    states="draft,sent"/>
+                    <field name="is_etat_planning"/>
+                </field>
+                <xpath expr="//notebook" position="before">
+                    <group>
+                        <field name="is_entete_devis"/>
+                        <field name="is_pied_devis"/>
+                        <field name="is_info_fiche_travail"/>
+                        <field name="is_piece_jointe_ids" widget="many2many_binary"/>
+                    </group>
+                </xpath>
+                <xpath expr="//page[1]" position="after"> 
+                    <page string="Planning">
+                        <group string="Planning">
+                            <field name="is_planning_ids" nolabel="1">
+                                 <tree editable="bottom">
+                                    <field name="date_debut" on_change="onchange_dates(date_debut,date_fin)"/>
+                                    <field name="date_fin"   on_change="onchange_dates(date_debut,date_fin)"/>
+                                    <field name="commentaire"/>
+                                    <field name="equipe_ids" widget="many2many_tags"/>
+                                    <field name="pose_depose"/>
+                                    <field name="etat"/>
+                                    <field name="realisation"/>
+                                    <field name="pv_realise"   readonly="1"/>
+                                    <field name="sms_heure"    readonly="1" string="SMS" optional="show"/>
+                                    <field name="sms_resultat" readonly="1" string="Err" optional="show"/>
+                                    <field name="alerte"                                 optional="show"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Filets" attrs="{'invisible': [('is_filet_ids', '=', [])]}">
+                            <field name="is_filet_ids" nolabel="1" readonly="1">
+                                 <tree>
+                                    <field name="name"/>
+                                    <field name="type_filet"/>
+                                    <field name="dimensions"/>
+                                    <field name="fabriquant"/>
+                                    <field name="etat_filet"/>
+                                    <field name="position"/>
+                                    <field name="depuis_le"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group attrs="{'invisible': [('is_filet_ids', '=', [])]}">
+                            <field name="is_chantier_id"/>
+                        </group>
+                    </page>
+                    <page string="Contrôle de gestion">
+                        <field name="is_controle_gestion_ids">
+                             <tree editable="bottom">
+                                <field name="ordre"/>
+                                <field name="controle_gestion_id"/>
+                                <field name="type_cout"/>
+                                <field name="montant_prevu"   sum="Total"/>
+                                <field name="montant_realise" sum="Total"/>
+                                <field name="ecart"           sum="Total"/>
+                            </tree>
+                        </field>
+                        <group>
+                            <group string="Prévu">
+                                <field name="is_total_mo_prevu"/>
+                                <field name="is_total_achats_prevu"/>
+                            </group>
+                            <group string="Réalisé">
+                                <field name="is_total_mo_realise"/>
+                                <field name="is_total_achats_realise"/>
+                            </group>
+                            <group string="Ecarts">
+                                <field name="is_ecart_mo"/>
+                                <field name="is_ecart_achat"/>
+                            </group>
+                            <group string="Nb jours">
+                                <field name="is_nb_jours_prevu"/>
+                                <field name="is_nb_jours_realise"/>
+                                <field name="is_ecart_jours"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="is_sale_order_tree" model="ir.ui.view">
+            <field name="name">is_sale_order_tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree" />
+            <field name="arch" type="xml">
+                <field name="invoice_status" position="before">
+                    <field name="is_num_ancien_devis" optional="show"/>
+                </field>
+                <field name="user_id" position="replace">
+                    <field name="is_nom_chantier"        optional="show"/>
+                    <field name="is_etat_planning"       optional="show"/>
+                    <field name="is_region_id"           optional="show"/>
+                    <field name="is_secteur_activite_id" optional="show"/>
+                    <field name="is_superficie_m2"       optional="show"/>
+                    <field name="is_ca_m2"               optional="show"/>
+
+                    <field name="is_type_partenaire"     optional="hide"/>
+                    <field name="is_classification"      optional="hide"/>
+                    <field name="is_contact_id"          optional="hide"/>
+                    <field name="is_superficie"          optional="hide"/>
+                    <field name="is_hauteur"             optional="hide"/>
+                    <field name="is_nb_interventions"    optional="hide"/>
+                    <field name="is_type_chantier"       optional="hide"/>
+                    <field name="is_type_prestation_id"  optional="hide"/>
+                    <field name="is_nacelle_id"          optional="hide"/>
+                    <field name="is_ca_nacelle"          optional="hide"/>
+                    <field name="is_ca_hors_nacelle"     optional="hide"/>
+                    <field name="is_suivi"               optional="hide"/>
+                    <field name="is_date_previsionnelle" optional="hide"/>
+                    <field name="is_distance_chantier"   optional="hide"/>
+                    <field name="is_ref_client"          optional="hide"/>
+                    <field name="is_motif_archivage_id"  optional="hide"/>
+                    <field name="is_motif_archivage"     optional="hide"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_view_sales_order_filter" model="ir.ui.view">
+            <field name="name">is_view_sales_order_filter</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter" />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_type_partenaire"/>
+                    <field name="is_nom_chantier"/>
+                    <field name="is_etat_planning"/>
+                    <field name="is_classification"/>
+                    <field name="is_region_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="is_sale_order_devis_action" model="ir.actions.act_window">
+            <field name="name">Devis</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="domain">[('state','in', ['draft','sent']),'|',('is_motif_archivage','=',''),('is_motif_archivage','=',False)]</field>
+        </record>
+
+
+
+
+        <record id="is_sale_order_archive_tree" model="ir.ui.view">
+            <field name="name">is_sale_order_archive_tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="90" />
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+                    <field name="is_nom_chantier"/>
+                    <field name="is_region_id"/>
+                    <field name="is_secteur_activite_id"/>
+                    <field name="is_superficie_m2"/>
+                    <field name="is_ca_m2"/>
+                    <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                    <field name="is_motif_archivage_id"/>
+                    <field name="is_motif_archivage"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_sale_order_devis_archive_action" model="ir.actions.act_window">
+            <field name="name">Devis archivés</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="view_id" ref="is_sale_order_archive_tree"/>
+            <field name="domain">[('state','in', ['draft','sent']),('is_motif_archivage','!=','')]</field>
+        </record>
+
+
+
+
+
+
+
+
+        <record id="is_sale_order_controle_gestion_tree" model="ir.ui.view">
+            <field name="name">is_sale_order_controle_gestion_tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="90" />
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+                    <field name="is_nom_chantier"/>
+                    <field name="is_region_id"/>
+                    <field name="is_secteur_activite_id"/>
+                    <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                    <field name="is_nb_jours_prevu" sum="Total"/>
+                    <field name="is_nb_jours_realise" sum="Total"/>
+                    <field name="is_ecart_jours" sum="Total"/>
+                    <field name="is_total_mo_prevu" sum="Total"/>
+                    <field name="is_total_mo_realise" sum="Total"/>
+                    <field name="is_ecart_mo" sum="Total"/>
+                    <field name="is_total_achats_prevu" sum="Total"/>
+                    <field name="is_total_achats_realise" sum="Total"/>
+                    <field name="is_ecart_achat" sum="Total"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_sale_order_controle_gestion_action" model="ir.actions.act_window">
+            <field name="name">Contrôle de gestion</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="view_id" ref="is_sale_order_controle_gestion_tree"/>
+        </record>
+
+
+        <record id="is_gestion_offres_tree" model="ir.ui.view">
+            <field name="name">is_gestion_offres_tree</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="90" />
+            <field name="arch" type="xml">
+                <tree>  <!-- colors="gray:state!='sale'"> -->
+                    <field name="name"/>
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+                    <field name="is_type_partenaire"/>
+                    <field name="is_region_id"/>
+                    <field name="is_classification"/>
+                    <field name="is_superficie_m2"/>
+                    <field name="is_ca_nacelle"                 sum="Total"/>
+                    <field name="amount_untaxed" string="CA HT" sum="Total"/>
+                    <field name="is_ca_hors_nacelle"            sum="Total"/>
+                    <field name="is_ca_m2"/>
+                    <field name="state"/>
+                    <field name="is_suivi"/>
+                    <field name="is_suivi_ht" sum="Total"/>
+                    <field name="is_date_previsionnelle"/>
+                    <field name="is_motif_archivage_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_gestion_offres_action" model="ir.actions.act_window">
+            <field name="name">Gestion des offres</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="view_id" ref="is_gestion_offres_tree"/>
+            <field name="domain">[('state','not in', ['cancel'])]</field>
+        </record>
+
+
+        <!-- is.sale.order.planning -->
+        <record id="is_sale_order_planning_sms_form" model="ir.ui.view">
+            <field name="name">is_sale_order_planning_sms_form</field>
+            <field name="model">is.sale.order.planning</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <sheet>
+                        <group>
+                            <field name="date_debut"   readonly="1"/>
+                            <field name="date_fin"     readonly="1"/>
+                            <field name="commentaire"  readonly="1"/>
+                            <field name="equipe_ids"   readonly="1" widget="many2many_tags" />
+                            <field name="pose_depose"  readonly="1"/>
+                            <field name="etat"         readonly="1"/>
+                            <field name="sms_heure"/>
+                            <field name="sms_mobile"   readonly="1"/>
+                            <field name="sms_resultat" readonly="1"/>
+                            <field name="sms_message"  readonly="1"/>
+                            <field name="sms_quota"    readonly="1"/>
+                            <field name="order_id"     readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_sale_order_planning_sms_tree" model="ir.ui.view">
+            <field name="name">is_sale_order_planning_sms_tree</field>
+            <field name="model">is.sale.order.planning</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="pose_depose"/>
+                    <field name="etat"/>
+                    <field name="sms_heure"/>
+                    <field name="sms_mobile"/>
+                    <field name="sms_resultat"/>
+                    <field name="sms_quota"/>
+                    <field name="order_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_sale_order_planning_search" model="ir.ui.view">
+            <field name="name">is_sale_order_planning_search</field>
+            <field name="model">is.sale.order.planning</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="pose_depose"/>
+                    <field name="etat"/>
+                    <field name="sms_heure"/>
+                    <field name="sms_mobile"/>
+                    <field name="sms_resultat"/>
+                    <field name="order_id"/>
+               </search>
+            </field>
+        </record>
+        <record id="is_sale_order_planning_action" model="ir.actions.act_window">
+            <field name="name">SMS</field>
+            <field name="res_model">is.sale.order.planning</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('sms_mobile','!=', '')]</field>
+        </record>
+
+
+        <!-- Type de prestation -->
+        <record id="is_type_prestation_form_view" model="ir.ui.view">
+            <field name="name">is_type_prestation_from_view</field>
+            <field name="model">is.type.prestation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" />
+                            </group>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_type_prestation_tree_view">
+            <field name="name">is_type_prestation_tree_view</field>
+            <field name="model">is.type.prestation</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_type_prestation_search_view" model="ir.ui.view">
+            <field name="name">is_type_prestation_search_view</field>
+            <field name="model">is.type.prestation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+        <record id="is_type_prestation_action" model="ir.actions.act_window">
+            <field name="name">Types de prestations</field>
+            <field name="res_model">is.type.prestation</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- Motif d'archivage -->
+        <record id="is_motif_archivage_form_view" model="ir.ui.view">
+            <field name="name">is_motif_archivage_from_view</field>
+            <field name="model">is.motif.archivage</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" />
+                            </group>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_motif_archivage_tree_view">
+            <field name="name">is_motif_archivage_tree_view</field>
+            <field name="model">is.motif.archivage</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_motif_archivage_search_view" model="ir.ui.view">
+            <field name="name">is_motif_archivage_search_view</field>
+            <field name="model">is.motif.archivage</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+        <record id="is_motif_archivage_action" model="ir.actions.act_window">
+            <field name="name">Motif d'archivage</field>
+            <field name="res_model">is.motif.archivage</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Nacelle -->
+        <record id="is_nacelle_form_view" model="ir.ui.view">
+            <field name="name">is_nacelle_from_view</field>
+            <field name="model">is.nacelle</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_nacelle_tree_view">
+            <field name="name">is_nacelle_tree_view</field>
+            <field name="model">is.nacelle</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_nacelle_search_view" model="ir.ui.view">
+            <field name="name">is_nacelle_search_view</field>
+            <field name="model">is.nacelle</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+        <record id="is_nacelle_action" model="ir.actions.act_window">
+            <field name="name">Nacelles</field>
+            <field name="res_model">is.nacelle</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.controle.gestion -->
+        <record id="is_controle_gestion_form_view" model="ir.ui.view">
+            <field name="name">is_controle_gestion_from_view</field>
+            <field name="model">is.controle.gestion</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="ordre"/>
+                            <field name="type_cout"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_controle_gestion_tree_view">
+            <field name="name">is_controle_gestion_tree_view</field>
+            <field name="model">is.controle.gestion</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="ordre"/>
+                    <field name="name"/>
+                    <field name="type_cout"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_controle_gestion_search_view" model="ir.ui.view">
+            <field name="name">is_controle_gestion_search_view</field>
+            <field name="model">is.controle.gestion</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="ordre"/>
+                    <field name="type_cout"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_controle_gestion_action" model="ir.actions.act_window">
+            <field name="name">Contrôle de gestion</field>
+            <field name="res_model">is.controle.gestion</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.equipe -->
+        <record id="is_equipe_form_view" model="ir.ui.view">
+            <field name="name">is_equipe_from_view</field>
+            <field name="model">is.equipe</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                            <field name="chef_secteur_id"/>
+                        </group>
+                        <group>
+                            <field name="absence_ids">
+                                 <tree editable="bottom">
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                    <field name="motif"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="message_ids">
+                                 <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="message"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_equipe_tree_view">
+            <field name="name">is_equipe_tree_view</field>
+            <field name="model">is.equipe</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="user_id"/>
+                    <field name="chef_secteur_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_equipe_search_view" model="ir.ui.view">
+            <field name="name">is_equipe_search_view</field>
+            <field name="model">is.equipe</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="chef_secteur_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_equipe_action" model="ir.actions.act_window">
+            <field name="name">Equipe</field>
+            <field name="res_model">is.equipe</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+        <!-- is.departement -->
+        <record id="is_departement_form_view" model="ir.ui.view">
+            <field name="name">is_departement_from_view</field>
+            <field name="model">is.departement</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="equipe_ids" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_departement_tree_view">
+            <field name="name">is_departement_tree_view</field>
+            <field name="model">is.departement</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="equipe_ids" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_departement_search_view" model="ir.ui.view">
+            <field name="name">is_departement_search_view</field>
+            <field name="model">is.departement</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_departement_action" model="ir.actions.act_window">
+            <field name="name">Départements</field>
+            <field name="res_model">is.departement</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- is.creation.planning -->
+        <record id="is_creation_planning_form_view" model="ir.ui.view">
+            <field name="name">is_creation_planning_from_view</field>
+            <field name="model">is.creation.planning</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button
+                            name="preparer_planning_action"
+                            type="object"
+                            string="Préparer le planning"
+                        />
+                        <button
+                            name="mail_planning_action"
+                            type="object"
+                            string="Envoyer le mail"
+                            confirm="Confirmer l'envoi du mail ?"
+                        />
+                        <button
+                            name="sms_planning_action"
+                            type="object"
+                            string="Envoyer les SMS"
+                            confirm="Confirmer l'envoi des SMS ?"
+                        />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                            <field name="equipe_id"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_creation_planning_tree_view">
+            <field name="name">is_creation_planning_tree_view</field>
+            <field name="model">is.creation.planning</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="equipe_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_creation_planning_search_view" model="ir.ui.view">
+            <field name="name">is_creation_planning_search_view</field>
+            <field name="model">is.creation.planning</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date_debut"/>
+                    <field name="equipe_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_creation_planning_action" model="ir.actions.act_window">
+            <field name="name">Préparation Planning</field>
+            <field name="res_model">is.creation.planning</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.creation.planning.preparation -->
+        <record id="is_creation_planning_preparation_form_view" model="ir.ui.view">
+            <field name="name">is_creation_planning_preparation_from_view</field>
+            <field name="model">is.creation.planning.preparation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="planning_id"/>
+                            <field name="date"/>
+                            <field name="equipe_id"/>
+                            <field name="order_id"/>
+                            <field name="nom_chantier"/>
+                            <field name="pose_depose"/>
+                            <field name="partner_id"/>
+                            <field name="etat"/>
+                            <field name="message"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_creation_planning_preparation_tree_view">
+            <field name="name">is_creation_planning_preparation_tree_view</field>
+            <field name="model">is.creation.planning.preparation</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="0">  <!-- colors="gray:etat=='fait'"> -->
+                    <field name="date"/>
+                    <field name="equipe_id"/>
+                    <field name="order_id"/>
+                    <field name="partner_id"/>
+                    <field name="nom_chantier"/>
+                    <field name="pose_depose"/>
+                    <field name="etat"/>
+                    <field name="message"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_creation_planning_preparation_search_view" model="ir.ui.view">
+            <field name="name">is_creation_planning_preparation_search_view</field>
+            <field name="model">is.creation.planning.preparation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="equipe_id"/>
+                    <field name="order_id"/>
+                    <field name="partner_id"/>
+                    <field name="nom_chantier"/>
+                    <field name="pose_depose"/>
+                    <field name="etat"/>
+                    <field name="message"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_creation_planning_preparation_action" model="ir.actions.act_window">
+            <field name="name">Préparation planning</field>
+            <field name="res_model">is.creation.planning.preparation</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+
+        <!-- is.planning.pdf -->
+        <record id="is_planning_pdf_form_view" model="ir.ui.view">
+            <field name="name">is_planning_pdf_form_view</field>
+            <field name="model">is.planning.pdf</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <field name="name"    readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_planning_pdf_tree_view">
+            <field name="name">is_planning_pdf_tree_view</field>
+            <field name="model">is.planning.pdf</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_planning_pdf_search_view" model="ir.ui.view">
+            <field name="name">is_planning_pdf_search_view</field>
+            <field name="model">is.planning.pdf</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="user_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_planning_pdf_action" model="ir.actions.act_window">
+            <field name="name">Planning PDF</field>
+            <field name="res_model">is.planning.pdf</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- is.planning -->
+        <record id="generer_planning_pdf_action_server" model="ir.actions.server">
+            <field name="name">Générer le planning PDF</field>
+            <field name="model_id" ref="model_is_planning"/>
+            <field name="binding_model_id" ref="model_is_planning"/>
+            <field name="state">code</field>
+            <field name="code">action = records.generer_planning_pdf_action()</field>
+            <field name="groups_id" eval="[(6,0,[
+                    ref('is_france_filets16.is_generer_planning_pdf_group'),
+                ])]"
+            />
+        </record>
+        <record id="is_planning_form_view" model="ir.ui.view">
+            <field name="name">is_planning_from_view</field>
+            <field name="model">is.planning</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="creation_planning_id" groups="sales_team.group_sale_manager" readonly="1"/>
+                            <field name="equipe_id"       readonly="1"/>
+                            <field name="chef_secteur_id" readonly="1"/>
+                        </group>
+                        <group string="Chantiers">
+                            <field name="chantier_ids" nolabel="1" readonly="1">
+                                 <tree editable="bottom">
+                                    <field name="chantier_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_planning_tree_view">
+            <field name="name">is_planning_tree_view</field>
+            <field name="model">is.planning</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="name"/>
+                    <field name="equipe_id"/>
+                    <field name="chef_secteur_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_planning_search_view" model="ir.ui.view">
+            <field name="name">is_planning_search_view</field>
+            <field name="model">is.planning</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="equipe_id"/>
+                    <field name="chef_secteur_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_planning_action" model="ir.actions.act_window">
+            <field name="name">Planning</field>
+            <field name="res_model">is.planning</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Chantier -->
+        <record id="init_chef_secteur_action_server" model="ir.actions.server">
+            <field name="name">init Chef de secteur</field>
+            <field name="model_id" ref="model_is_chantier"/>
+            <field name="binding_model_id" ref="model_is_chantier"/>
+            <field name="state">code</field>
+            <field name="code">action = records._compute_equipe_ids()</field>
+            <field name="groups_id" eval="[(6,0,[
+                    ref('sales_team.group_sale_manager'),
+                ])]"
+            />
+        </record>
+        <record id="is_chantier_form_view" model="ir.ui.view">
+            <field name="name">is_chantier_from_view</field>
+            <field name="model">is.chantier</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <sheet>
+                        <style>
+                            .o_form_view .o_form_sheet_bg > .o_form_sheet{
+                                max-width: 1800px;
+                            }
+                        </style>
+                        <group string="Références du chantier">
+                            <group>
+                                <field name="name"/>
+                                <field name="equipe_ids"       widget="many2many_tags" groups="sales_team.group_sale_manager"/>
+                                <field name="user_ids"         widget="many2many_tags"/>
+                                <field name="chef_secteur_ids" widget="many2many_tags" groups="sales_team.group_sale_manager"/>
+                                <field name="order_id" groups="sales_team.group_sale_manager"/>
+                                <field name="client"/>
+                            </group>
+                            <group>
+                                <field name="nom_chantier"/>
+                                <field name="superficie"/>
+                                <field name="hauteur"/>
+                                <field name="type_chantier"/>
+                                <field name="contact_client"/>
+                            </group>
+                        </group>
+                        <group string="Interventions">
+                            <field name="planning_ids" nolabel="1">
+                                 <tree editable="bottom" create="0">
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                    <field name="commentaire"/>
+                                    <field name="equipe_ids" widget="many2many_tags"/>
+                                    <field name="pose_depose"/>
+                                    <field name="etat"/>
+                                    <button title="Actualiser la liste des filets pour ce chantier" name="actualiser_filets_action" type="object" icon="fa-refresh"/>
+                                    <field name="realisation"/>
+                                    <button title="Saisie du PV" name="saisie_pv_action" type="object" icon="fa-search-plus"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Filets" attrs="{'invisible': [('filet_ids', '=', [])]}">
+                            <field name="filet_ids" nolabel="1" readonly="1">
+                                 <tree>
+                                    <field name="name"/>
+                                    <field name="type_filet"/>
+                                    <field name="dimensions"/>
+                                    <field name="fabriquant"/>
+                                    <field name="etat_filet"/>
+                                    <field name="position"/>
+                                    <field name="depuis_le"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Pièces jointes commande" attrs="{'invisible': [('piece_jointe_commande_ids', '=', [])]}">
+                            <!-- <field name="piece_jointe_ids" nolabel="1" widget="many2many_binary"/> -->
+                            <field name="piece_jointe_commande_ids" nolabel="1" widget="many2many_binary"/>
+                        </group>
+                        <group string="Pièces jointes chantier">
+                            <field name="piece_jointe_chantier_ids_readonly" invisible="1"/>
+                            <field 
+                                name="piece_jointe_chantier_ids" nolabel="1" 
+                                widget="many2many_binary" 
+                                attrs="{'readonly': [('piece_jointe_chantier_ids_readonly', '=', True)]}"
+                            />
+                        </group>
+                        <group string="Documents de fin de chantier">
+
+                            <field name="fin_chantier_document" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="commentaire"/>
+                                    <field name="piece_jointe_ids" nolabel="1" widget="many2many_binary"/>
+                                    <field name="create_uid"  optional="show" string="Créé par"/>
+                                    <field name="create_date" optional="show" string="Le"/>
+                                    <field name="write_uid"   optional="show" string="Modifié par"/>
+                                    <field name="write_date"  optional="show" string="Le"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Autres documents de fin de chantier" attrs="{'invisible': [('fin_chantier_ids', '=', [])]}">
+                            <field name="fin_chantier_ids" nolabel="1" widget="many2many_binary" readonly="1"/>
+                        </group>
+                        <group string="Informations diverses">
+                            <field name="informations" nolabel="1"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_chantier_tree_view">
+            <field name="name">is_chantier_tree_view</field>
+            <field name="model">is.chantier</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="name"/>
+                    <field name="user_ids"         widget="many2many_tags"/>
+                    <field name="equipe_ids"       widget="many2many_tags" optional="hide"/>
+                    <field name="chef_secteur_ids" widget="many2many_tags" optional="hide"/>
+                    <field name="client"/>
+                    <field name="contact_client"/>
+                    <field name="nom_chantier"/>
+                    <field name="type_chantier"/>
+
+                </tree>
+            </field>
+        </record>
+        <record id="is_chantier_search_view" model="ir.ui.view">
+            <field name="name">is_chantier_search_view</field>
+            <field name="model">is.chantier</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="user_ids"/>
+                    <field name="order_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_chantier_action" model="ir.actions.act_window">
+            <field name="name">Chantiers</field>
+            <field name="res_model">is.chantier</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Chantier Planning -->
+        <record id="is_chantier_planning_form_view" model="ir.ui.view">
+            <field name="name">is_chantier_planning_from_view</field>
+            <field name="model">is.chantier.planning</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <sheet>
+                        <group string="Chantier">
+                            <group>
+                                <field name="chantier_id"/>
+                                <field name="pose_depose"/>
+                            </group>
+                            <group>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="commentaire"/>
+                        </group>
+                        <group string="Réalisation">
+                                <field name="realisation"/>
+                        </group>
+                        <group string="PV de réception">
+                                <field name="zone_concernee"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="etat_mailles"/>
+                            </group>
+                            <group>
+                                <field name="etat_mailles_obs"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="reprise_mailles"/>
+                            </group>
+                            <group>
+                                <field name="reprise_mailles_obs"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="point_encrage"/>
+                            </group>
+                            <group>
+                                <field name="point_encrage_obs"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="jointement"/>
+                            </group>
+                            <group>
+                                <field name="jointement_obs"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="tension_filets"/>
+                            </group>
+                            <group>
+                                <field name="tension_filets_obs"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="observation"/>
+                        </group>
+                        <group>
+                            <field name="pv_realise"/>
+                            <field name="sale_order_planning_id" invisible="1"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

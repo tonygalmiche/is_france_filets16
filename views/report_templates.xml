@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <template id="is_external_layout_standard" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[1]" position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+                <div class="row" style="font-size:11pt">
+                    <div class="col-6">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 100px;"/>
+                    </div>
+                    <div class="col-6 text-right">
+                        <b><div t-field="company.name"/></b>
+                        <div><span t-field="company.street"/> - <span t-field="company.zip"/> <span t-field="company.city"/></div>
+                        <div>
+                            Tél : <span t-field="company.phone"/> - Portable : <span t-field="company.partner_id.mobile"/>
+                        </div>
+                        <div>Emetteur : <span t-field="o.user_id"/> - <span t-field="o.user_id.email"/></div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout" position="replace">
+            <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+                <div class="text-center" style="border-top: 1px solid black;font-size:11pt">
+                    <span t-field="company.name"/> - 
+                    NAF : <span t-field="company.ape"/> - 
+                    N°TVA : <span t-field="company.vat"/> - 
+                    SIRET : <span t-field="company.siret"/> - 
+                    <span t-field="company.company_registry"/> - 
+                    <span class="page"/>/<span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

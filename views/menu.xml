@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <menuitem 
+        id="is_chantier_top_menu"
+        sequence="1" 
+        name="Chantiers"
+    />
+
+    <menuitem 
+        id="is_planning_main_menu" 
+        sequence="10" 
+        name="Planning"
+        parent="is_chantier_top_menu" 
+    />
+    <menuitem 
+        id="is_planning_menu" 
+        sequence="10" 
+        name="Planning"
+        parent="is_planning_main_menu" 
+        action="is_planning_action" 
+    />
+    <menuitem 
+        id="is_planning_pdf_menu" 
+        sequence="20" 
+        name="Planning PDF"
+        parent="is_planning_main_menu" 
+        action="is_planning_pdf_action" 
+    />
+
+
+
+    <menuitem 
+        id="is_chantier_main_menu" 
+        sequence="20" 
+        name="Chantiers"
+        parent="is_chantier_top_menu" 
+    />
+    <menuitem 
+        id="is_chantier_menu" 
+        sequence="10" 
+        name="Chantiers"
+        parent="is_chantier_main_menu" 
+        action="is_chantier_action" 
+    /> 
+
+
+    <!-- Ventes -->
+    <!-- <menuitem 
+        id="sale.menu_sale_quotations"
+        action="is_sale_order_devis_action"
+        parent="sales_team.menu_sales"
+        sequence="11"
+    />
+    -->
+    <menuitem 
+        id="is_sale_order_devis_archive_menu"
+        action="is_sale_order_devis_archive_action"
+        parent="sale.sale_order_menu"
+        sequence="12"
+    />
+    <menuitem 
+        id="is_sale_order_planning_menu"
+        action="is_sale_order_planning_action"
+        parent="sale.sale_order_menu"
+        sequence="12"
+    />
+    <menuitem 
+        id="is_sale_order_controle_gestion_menu"
+        action="is_sale_order_controle_gestion_action"
+        parent="sale.sale_order_menu"
+        sequence="20"
+    />
+    <menuitem 
+        id="is_gestion_offres_menu"
+        action="is_gestion_offres_action"
+        parent="sale.sale_order_menu"
+        sequence="30"
+    />
+    <menuitem 
+        id="is_res_partner_menu"
+        action="is_res_partner_action"
+        parent="sale.sale_order_menu"
+        sequence="40"
+    /> 
+
+
+    <menuitem 
+        id="is_preparation_planning_menu"
+        sequence="800" 
+        name="Préparation Planning"
+        parent="sale.sale_menu_root"
+    />
+    <menuitem 
+        id="is_creation_planning_menu" 
+        sequence="10" 
+        name="Préparation Planning"
+        parent="is_preparation_planning_menu" 
+        action="is_creation_planning_action" 
+    />
+
+
+    <menuitem 
+        id="is_suivi_budget_main_menu"
+        sequence="810" 
+        name="Suivi budget"
+        parent="sale.sale_menu_root"
+    />
+    <menuitem 
+        id="is_suivi_budget_menu" 
+        sequence="10" 
+        name="Suivi budget"
+        parent="is_suivi_budget_main_menu" 
+        action="is_suivi_budget_action" 
+    />
+
+
+
+    <!-- Tables -->>
+    <menuitem 
+        id="is_ventes_table_menu"
+        sequence="900" 
+        name="Tables"
+        parent="sale.sale_menu_root"
+    />
+    <menuitem 
+        id="is_region_menu" 
+        sequence="10" 
+        name="Régions"
+        parent="is_ventes_table_menu" 
+        action="is_region_action" 
+    />
+    <menuitem 
+        id="is_secteur_activite_menu" 
+        sequence="20" 
+        name="Secteurs d'activités"
+        parent="is_ventes_table_menu" 
+        action="is_secteur_activite_action" 
+    />
+    <menuitem 
+        id="is_origine_menu"
+        sequence="25"
+        name="Origine Client"
+        parent="is_ventes_table_menu"
+        action="is_origine_action"
+    />
+    <menuitem 
+        id="is_type_prestation_menu" 
+        sequence="30" 
+        name="Types de prestations"
+        parent="is_ventes_table_menu" 
+        action="is_type_prestation_action" 
+    />
+    <menuitem 
+        id="is_nacelle_menu" 
+        sequence="40" 
+        name="Nacelle"
+        parent="is_ventes_table_menu" 
+        action="is_nacelle_action" 
+    />
+    <menuitem 
+        id="is_equipe_menu" 
+        sequence="50" 
+        name="Equipe"
+        parent="is_ventes_table_menu" 
+        action="is_equipe_action" 
+    />
+    <menuitem 
+        id="is_departement_menu" 
+        sequence="55" 
+        name="Département"
+        parent="is_ventes_table_menu" 
+        action="is_departement_action" 
+    />
+    <menuitem 
+        id="is_motif_archivage_menu" 
+        sequence="60" 
+        name="Motif archivage devis"
+        parent="is_ventes_table_menu" 
+        action="is_motif_archivage_action" 
+    />
+    <menuitem 
+        id="is_controle_gestion_menu"
+        sequence="70" 
+        name="Contrôle de gestion"
+        parent="is_ventes_table_menu"
+        action="is_controle_gestion_action"
+    />
+    <menuitem 
+        id="is_groupe_client_menu"
+        sequence="80" 
+        name="Groupe client"
+        parent="is_ventes_table_menu"
+        action="is_groupe_client_action"
+    />
+
+
+    <!-- Analyses -->
+    <menuitem 
+        id="is_analyses_top_menu"
+        sequence="90" 
+        name="Analyses"
+    />
+    <menuitem 
+        id="is_analyses_main_menu" 
+        sequence="10" 
+        name="Lignes de commandes"
+        parent="is_analyses_top_menu" 
+    />
+    <menuitem 
+        id="is_sale_order_line_menu" 
+        sequence="10" 
+        name="Lignes de commandes"
+        parent="is_analyses_main_menu" 
+        action="is_sale_order_line_action" 
+    />
+    <menuitem 
+        id="is_sale_order_line_region_menu" 
+        sequence="20" 
+        name="par Région"
+        parent="is_analyses_main_menu" 
+        action="is_sale_order_line_region_action" 
+    />
+    <menuitem 
+        id="is_sale_order_line_secteur_menu" 
+        sequence="30" 
+        name="par Secteur"
+        parent="is_analyses_main_menu" 
+        action="is_sale_order_line_secteur_action" 
+    />
+    <menuitem 
+        id="is_sale_order_line_product_menu" 
+        sequence="40" 
+        name="par Article"
+        parent="is_analyses_main_menu" 
+        action="is_sale_order_line_product_action" 
+    />
+    <menuitem 
+        id="is_sale_order_line_state_menu" 
+        sequence="50" 
+        name="par État"
+        parent="is_analyses_main_menu" 
+        action="is_sale_order_line_state_action" 
+    />
+
+
+
+
+<!-- 
+    <menuitem 
+        id="is_account_invoice_line_main_menu" 
+        sequence="20" 
+        name="Lignes de factures"
+        parent="is_analyses_top_menu" 
+    />
+    <menuitem 
+        id="is_account_invoice_line_menu" 
+        sequence="10" 
+        name="Lignes de factures"
+        parent="is_account_invoice_line_main_menu" 
+        action="is_account_invoice_line_action" 
+    />
+    <menuitem 
+        id="is_account_invoice_line_region_menu" 
+        sequence="20" 
+        name="par Région"
+        parent="is_account_invoice_line_main_menu" 
+        action="is_account_invoice_line_region_action" 
+    />
+    <menuitem 
+        id="is_account_invoice_line_secteur_menu" 
+        sequence="30" 
+        name="par Secteur"
+        parent="is_account_invoice_line_main_menu" 
+        action="is_account_invoice_line_secteur_action" 
+    />
+    <menuitem 
+        id="is_account_invoice_line_product_menu" 
+        sequence="40" 
+        name="par Article"
+        parent="is_account_invoice_line_main_menu" 
+        action="is_account_invoice_line_product_action" 
+    />
+    <menuitem 
+        id="is_account_invoice_line_state_menu" 
+        sequence="50" 
+        name="par État"
+        parent="is_account_invoice_line_main_menu" 
+        action="is_account_invoice_line_state_action" 
+    /> -->
+
+
+    <!-- Filets -->
+    <menuitem 
+        id="is_filet_main_menu" 
+        sequence="0" 
+        name="Filets"
+        parent="purchase.menu_purchase_root"
+    />
+    <menuitem 
+        id="is_filet_menu" 
+        sequence="10" 
+        name="Filets"
+        parent="is_filet_main_menu" 
+        action="is_filet_action" 
+    />
+    <menuitem 
+        id="is_filet_mouvement_menu" 
+        sequence="20" 
+        name="Mouvements"
+        parent="is_filet_main_menu" 
+        action="is_filet_mouvement_action" 
+    />
+
+
+
+
+</odoo>

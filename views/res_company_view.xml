@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="is_view_company_form" model="ir.ui.view">
+            <field name="name">is_view_company_form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <field name="vat" position="after">
+                    <field name="siret" readonly="1"/>
+                </field>
+                <notebook position="inside">
+                    <page string="Configuration France Filets">
+                        <group string="Facturation">
+                            <field name="is_affacturage"/>
+                            <field name="is_conditions_generales"/>
+                        </group>
+                        <group string="SMS via OVH">
+                            <field name="is_sms_account"/>
+                            <field name="is_sms_login"/>
+                            <field name="is_sms_password" password="True"/>
+                            <field name="is_sms_from"/>
+                            <field name="is_sms_message"/>
+                            <field name="is_sms_mobile"/>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</openerp>

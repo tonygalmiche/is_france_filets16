@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <!-- Planning -->
+        <record id="is_planning_paperformat" model="report.paperformat">
+            <field name="name">Planning</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">25</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="is_planning_reports" model="ir.actions.report">
+            <field name="name">Planning</field>
+            <field name="model">is.creation.planning</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">is_france_filets16.is_planning_report</field>
+            <field name="report_file">is_france_filets16.is_planning_report</field>
+            <field name="binding_model_id" ref="model_is_creation_planning"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="is_france_filets16.is_planning_paperformat"/>
+        </record>
+
+
+        <!-- Fiche de travail -->
+        <record id="is_fiche_travail_paperformat" model="report.paperformat">
+            <field name="name">Fiche de travail</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">25</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="is_fiche_travail_reports" model="ir.actions.report">
+            <field name="name">Fiche de travail</field>
+            <field name="model">is.creation.planning</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">is_france_filets16.is_fiche_travail_report</field>
+            <field name="report_file">is_france_filets16.is_fiche_travail_report</field>
+            <field name="binding_model_id" ref="model_is_creation_planning"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="is_france_filets16.is_fiche_travail_paperformat"/>
+        </record>
+
+
+
+        <!-- PV de réception -->
+        <record id="is_pv_reception_paperformat" model="report.paperformat">
+            <field name="name">PV de réception</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">45</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="is_pv_reception_reports" model="ir.actions.report">
+            <field name="name">PV de réception</field>
+            <field name="model">is.chantier.planning</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">is_france_filets16.is_pv_reception_report</field>
+            <field name="report_file">is_france_filets16.is_pv_reception_report</field>
+            <field name="binding_model_id" ref="model_is_chantier_planning"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="is_france_filets16.is_pv_reception_paperformat"/>
+        </record>
+
+
+
+
+        <!-- Suivi Budget -->
+        <record id="is_suivi_budget_paperformat" model="report.paperformat">
+            <field name="name">Suivi Budget</field>
+            <field name="default" eval="True" />
+            <field name="format">A3</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">7</field>
+            <field name="margin_bottom">7</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="is_suivi_budget_reports" model="ir.actions.report">
+            <field name="name">Suivi Budget</field>
+            <field name="model">is.suivi.budget</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">is_france_filets16.is_suivi_budget_report</field>
+            <field name="report_file">is_france_filets16.is_suivi_budget_report</field>
+            <field name="binding_model_id" ref="model_is_suivi_budget"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="is_france_filets16.is_suivi_budget_paperformat"/>
+        </record>
+
+
+        <!-- Suivi Budget -->
+        <record id="is_suivi_budget_journal_vente_paperformat" model="report.paperformat">
+            <field name="name">Journal des ventes</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">7</field>
+            <field name="margin_bottom">7</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="is_suivi_budget_journal_vente_reports" model="ir.actions.report">
+            <field name="name">Journal des ventes</field>
+            <field name="model">is.suivi.budget</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">is_france_filets16.is_suivi_budget_journal_vente_report</field>
+            <field name="report_file">is_france_filets16.is_suivi_budget_journal_vente_report</field>
+            <field name="binding_model_id" ref="model_is_suivi_budget"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="is_france_filets16.is_suivi_budget_journal_vente_paperformat"/>
+        </record>
+    </data>
+</odoo>
