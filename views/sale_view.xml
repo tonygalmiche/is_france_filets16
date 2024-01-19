@@ -856,13 +856,12 @@
                             <field name="equipe_id"       readonly="1"/>
                             <field name="chef_secteur_id" readonly="1"/>
                         </group>
-                        <group string="Chantiers">
-                            <field name="chantier_ids" nolabel="1" readonly="1">
-                                 <tree editable="bottom">
-                                    <field name="chantier_id"/>
-                                </tree>
-                            </field>
-                        </group>
+                        <group string="Chantiers"/>
+                        <field name="chantier_ids" nolabel="1" readonly="1">
+                                <tree editable="bottom">
+                                <field name="chantier_id"/>
+                            </tree>
+                        </field>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
@@ -942,34 +941,32 @@
                                 <field name="contact_client"/>
                             </group>
                         </group>
-                        <group string="Interventions">
-                            <field name="planning_ids" nolabel="1">
-                                 <tree editable="bottom" create="0">
-                                    <field name="date_debut"/>
-                                    <field name="date_fin"/>
-                                    <field name="commentaire"/>
-                                    <field name="equipe_ids" widget="many2many_tags"/>
-                                    <field name="pose_depose"/>
-                                    <field name="etat"/>
-                                    <button title="Actualiser la liste des filets pour ce chantier" name="actualiser_filets_action" type="object" icon="fa-refresh"/>
-                                    <field name="realisation"/>
-                                    <button title="Saisie du PV" name="saisie_pv_action" type="object" icon="fa-search-plus"/>
-                                </tree>
-                            </field>
-                        </group>
-                        <group string="Filets" attrs="{'invisible': [('filet_ids', '=', [])]}">
-                            <field name="filet_ids" nolabel="1" readonly="1">
-                                 <tree>
-                                    <field name="name"/>
-                                    <field name="type_filet"/>
-                                    <field name="dimensions"/>
-                                    <field name="fabriquant"/>
-                                    <field name="etat_filet"/>
-                                    <field name="position"/>
-                                    <field name="depuis_le"/>
-                                </tree>
-                            </field>
-                        </group>
+                        <group string="Interventions"/>
+                        <field name="planning_ids" nolabel="1">
+                                <tree editable="bottom" create="0">
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                                <field name="commentaire"/>
+                                <field name="equipe_ids" widget="many2many_tags"/>
+                                <field name="pose_depose"/>
+                                <field name="etat"/>
+                                <button title="Actualiser la liste des filets pour ce chantier" name="actualiser_filets_action" type="object" icon="fa-refresh"/>
+                                <field name="realisation"/>
+                                <button title="Saisie du PV" name="saisie_pv_action" type="object" icon="fa-search-plus"/>
+                            </tree>
+                        </field>
+                        <group string="Filets" attrs="{'invisible': [('filet_ids', '=', [])]}"/>
+                        <field name="filet_ids" nolabel="1" readonly="1" attrs="{'invisible': [('filet_ids', '=', [])]}">
+                                <tree>
+                                <field name="name"/>
+                                <field name="type_filet"/>
+                                <field name="dimensions"/>
+                                <field name="fabriquant"/>
+                                <field name="etat_filet"/>
+                                <field name="position"/>
+                                <field name="depuis_le"/>
+                            </tree>
+                        </field>
                         <group string="Pièces jointes commande" attrs="{'invisible': [('piece_jointe_commande_ids', '=', [])]}">
                             <!-- <field name="piece_jointe_ids" nolabel="1" widget="many2many_binary"/> -->
                             <field name="piece_jointe_commande_ids" nolabel="1" widget="many2many_binary"/>
@@ -982,19 +979,17 @@
                                 attrs="{'readonly': [('piece_jointe_chantier_ids_readonly', '=', True)]}"
                             />
                         </group>
-                        <group string="Documents de fin de chantier">
-
-                            <field name="fin_chantier_document" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="commentaire"/>
-                                    <field name="piece_jointe_ids" nolabel="1" widget="many2many_binary"/>
-                                    <field name="create_uid"  optional="show" string="Créé par"/>
-                                    <field name="create_date" optional="show" string="Le"/>
-                                    <field name="write_uid"   optional="show" string="Modifié par"/>
-                                    <field name="write_date"  optional="show" string="Le"/>
-                                </tree>
-                            </field>
-                        </group>
+                        <group string="Documents de fin de chantier"/>
+                        <field name="fin_chantier_document" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="commentaire"/>
+                                <field name="piece_jointe_ids" nolabel="1" widget="many2many_binary"/>
+                                <field name="create_uid"  optional="show" string="Créé par"/>
+                                <field name="create_date" optional="show" string="Le"/>
+                                <field name="write_uid"   optional="show" string="Modifié par"/>
+                                <field name="write_date"  optional="show" string="Le"/>
+                            </tree>
+                        </field>
                         <group string="Autres documents de fin de chantier" attrs="{'invisible': [('fin_chantier_ids', '=', [])]}">
                             <field name="fin_chantier_ids" nolabel="1" widget="many2many_binary" readonly="1"/>
                         </group>

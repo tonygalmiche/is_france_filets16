@@ -1035,7 +1035,7 @@ class IsCreationPlanning(models.Model):
             equipe_id=obj.equipe_id.id
             for planning in plannings:
                 obj.equipe_id=planning.equipe_id.id
-                pdf = request.env.ref('is_france_filets16.is_planning_reports').sudo()._render_qweb_pdf([obj.id])[0]
+                pdf = self.env['ir.actions.report']._render_qweb_pdf('is_france_filets16.is_planning_reports',[obj.id])[0]
                 model=planning._name
                 name='planning.pdf'
                 attachment_obj = self.env['ir.attachment']
