@@ -19,10 +19,7 @@ InfoSaône - Module Odoo 16 pour France Filets (anti-chute-pro)
         'account',
         'purchase',
         'attachment_indexation',
-        #"base_rest",                    # Pour API Rest Akyos https://github.com/OCA/rest-framework
-        #"base_rest_datamodel",          # Pour API Rest Akyos
-        # "base_rest_auth_user_service",  # Pour API Rest Akyos unported => https://github.com/OCA/rest-framework
-        #"component",                    # Pour API Rest Akyos
+        'fastapi' # Pour API Rest Akyos pour Debian 12 Bookworm => https://apps.odoo.com/apps/modules/16.0/fastapi/
 ],
     'data' : [
         'security/res.groups.xml',
@@ -36,6 +33,7 @@ InfoSaône - Module Odoo 16 pour France Filets (anti-chute-pro)
         'views/is_sale_order_line.xml',
         'views/is_filet_view.xml',
         'views/is_suivi_budget_view.xml',
+        'views/res_users_view.xml',
         'views/report_templates.xml',
         'views/menu.xml',
         'report/sale_report_templates.xml',
