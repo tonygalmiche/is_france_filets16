@@ -68,6 +68,11 @@ def auth_login(
         user = env['res.users'].browse(uid)
         token =  uuid.uuid4() 
         user.sudo().is_token_api = token
+
+        print("auth_login",user.login, token)
+
+
+
         return {
             "status": "success",
             "token" : token,
