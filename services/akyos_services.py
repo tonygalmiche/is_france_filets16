@@ -30,17 +30,10 @@ class DateModel(BaseModel):
 
 def verif_token(env, token):
     users = env['res.users'].search([('is_token_api','=',token)])
-
-    print(users, token)
-
     test=False
     for user in users:
         if user == env.user:
-            print("verif_token OK")
             return ""
-        
-
-
     return {"err": "Accès non autorisé !"}
 
 
@@ -68,11 +61,6 @@ def auth_login(
         user = env['res.users'].browse(uid)
         token =  uuid.uuid4() 
         user.sudo().is_token_api = token
-
-        print("auth_login",user.login, token)
-
-
-
         return {
             "status": "success",
             "token" : token,
