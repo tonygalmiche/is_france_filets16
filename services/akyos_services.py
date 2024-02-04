@@ -43,7 +43,16 @@ def auth_login(
     login   : Annotated[str, Form()],
     password: Annotated[str, Form()],
 ):
+    
+
+    print("login=",login)
+
     uid = env['res.users'].authenticate(env['res.users'], login,password, {'interactive':False})
+
+    print("uid=",uid)
+
+
+
     if not uid:
         return {"Status": "Error", "Message": "Incorrect username or password"}
     assert password
