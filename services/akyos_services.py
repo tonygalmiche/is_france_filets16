@@ -30,10 +30,17 @@ class DateModel(BaseModel):
 
 def verif_token(env, token):
     users = env['res.users'].search([('is_token_api','=',token)])
+
+    print(users, token)
+
     test=False
     for user in users:
         if user == env.user:
+            print("verif_token OK")
             return ""
+        
+
+
     return {"err": "Accès non autorisé !"}
 
 
@@ -43,16 +50,7 @@ def auth_login(
     login   : Annotated[str, Form()],
     password: Annotated[str, Form()],
 ):
-    
-
-    print("login=",login)
-
     uid = env['res.users'].authenticate(env['res.users'], login,password, {'interactive':False})
-
-    print("uid=",uid)
-
-
-
     if not uid:
         return {"Status": "Error", "Message": "Incorrect username or password"}
     assert password
