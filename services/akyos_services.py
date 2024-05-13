@@ -85,12 +85,17 @@ def get_dates(
     res=[]
     for date in dates:
         res.append(DateModel(date=date.strftime('%Y-%m-%d')))
+
+
+    print('get_dates : res=',res)
+
+
     return res
 
 
 @akyos_api_router.post("/api-rest/create-order")
 def create_order(
-    env       : Annotated[Environment, Depends(odoo_env)],
+    env           : Annotated[Environment, Depends(odoo_env)],
     code_client   : Annotated[str, Form()],
     departement   : Annotated[str, Form()],
     zone          : Annotated[str, Form()],
@@ -105,6 +110,12 @@ def create_order(
     res=verif_token(env, X_Openerp_Session_Id)
     if res!="":
         return res
+    
+
+
+
+
+
     res=env['sale.order'].create_akyos_order(
         code_client   = code_client, 
         departement   = departement, 
@@ -116,6 +127,11 @@ def create_order(
         nom_chantier  = nom_chantier, 
         utilisateur   = utilisateur
     )
+
+
+    print('create_order',res,code_client,departement,zone,tarif_ht,montant_paye,date_reservee,prestation,nom_chantier,utilisateur)
+
+
     return res
 
 
