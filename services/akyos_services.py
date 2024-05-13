@@ -79,6 +79,11 @@ def get_dates(
     Retourne la liste des dates disponibles pour un département
     """
     res=verif_token(env, X_Openerp_Session_Id)
+
+    print('get_dates : verif_token=',res)
+
+
+
     if res!="":
         return res
     dates = env['is.departement'].get_dates(departement, limite)
