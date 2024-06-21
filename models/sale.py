@@ -153,7 +153,8 @@ class IsEquipe(models.Model):
             where 
                 date_debut<=%s and 
                 date_fin>=%s and
-                rel.equipe_id=%s
+                rel.equipe_id=%s and
+                p.pose_depose='pose'
         """
         cr.execute(SQL,[date,date,self.id])
         res = cr.fetchall()
