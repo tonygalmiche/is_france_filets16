@@ -471,7 +471,25 @@ class SaleOrder(models.Model):
             obj.invoice_status = 'invoiced'
 
 
-    def create_akyos_order(self, code_client=False, departement=False, zone=False, tarif_ht=False, montant_paye=False, date_reservee=False, prestation=False,nom_chantier=False, utilisateur=False):
+    def create_akyos_order(self, 
+                code_client=False, 
+                departement=False, 
+                zone=False, 
+                tarif_ht=False, 
+                montant_paye=False, 
+                date_reservee=False, 
+                prestation=False,
+                nom_chantier=False, 
+                utilisateur=False,
+                ref_client=False,
+                superficie=False,
+                piece_jointe1=False,
+                piece_jointe2=False,
+                piece_jointe3=False,
+                piece_jointe4=False,
+                piece_jointe5=False,
+            ):
+        
         res={}
         err=False
         prestations={
@@ -511,8 +529,40 @@ class SaleOrder(models.Model):
                 'is_nom_chantier'          : nom_chantier,
                 'is_montant_regle_en_ligne': montant_paye,
                 'is_utilisateur_reserve'   : utilisateur,
+                'is_ref_client'            : ref_client,
+                'is_superficie'            : superficie,
             }
             order = self.env['sale.order'].create(vals)
+            _logger.info("create_akyos_order : Création commande %s"%order.name)
+
+            #** Ajout des pieces jointes **************************************
+            if order:
+                piece_jointe_ids=[]
+                def add_piece_jointe(order,piece_jointe):
+                    [file_name,file_type,b64]=piece_jointe.split('|')
+                    vals = {
+                        'name':        file_name,
+                        'type':        'binary',
+                        'res_model':   'sale.order',
+                        'datas':       b64,
+                    }
+                    attachment = self.env['ir.attachment'].create(vals)
+                    _logger.info("create_akyos_order : Ajout pièce jointe '%s' sur la commande %s"%(file_name,order.name))
+                    return attachment.id
+
+                if piece_jointe1:
+                    piece_jointe_ids.append(add_piece_jointe(order,piece_jointe1))
+                if piece_jointe2:
+                    piece_jointe_ids.append(add_piece_jointe(order,piece_jointe2))
+                if piece_jointe3:
+                    piece_jointe_ids.append(add_piece_jointe(order,piece_jointe3))
+                if piece_jointe4:
+                    piece_jointe_ids.append(add_piece_jointe(order,piece_jointe4))
+                if piece_jointe5:
+                    piece_jointe_ids.append(add_piece_jointe(order,piece_jointe5))
+                order.is_piece_jointe_ids = piece_jointe_ids
+
+            #** Ajout de la ligne de commande *********************************
             if order:
                 numcde = order.name
                 res["numcde"]=numcde

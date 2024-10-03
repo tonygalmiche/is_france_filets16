@@ -1,5 +1,5 @@
 from typing import Annotated, List, Union
-from fastapi import APIRouter, Depends, Form, Header # Documentation FastAPI : https://fastapi.tiangolo.com/tutorial/
+from fastapi import APIRouter, Depends, Form, Header # Documentation FastAPI : https://fastapi.tiangolo.com/tutorial/ et https://github.com/OCA/rest-framework/tree/16.0/fastapi
 from pydantic import BaseModel
 from odoo import api, fields, models
 from odoo.api import Environment
@@ -110,16 +110,19 @@ def create_order(
     prestation    : Annotated[str, Form()],
     nom_chantier  : Annotated[str, Form()],
     utilisateur   : Annotated[str, Form()],
+    ref_client    : Annotated[str, Form()] = None,
+    superficie    : Annotated[str, Form()] = None,
+    piece_jointe1 : Annotated[str, Form()] = None,
+    piece_jointe2 : Annotated[str, Form()] = None,
+    piece_jointe3 : Annotated[str, Form()] = None,
+    piece_jointe4 : Annotated[str, Form()] = None,
+    piece_jointe5 : Annotated[str, Form()] = None,
     X_Openerp_Session_Id: Annotated[Union[str, None], Header()] = None,
 ): 
     res=verif_token(env, X_Openerp_Session_Id)
     if res!="":
         return res
     
-
-
-
-
 
     res=env['sale.order'].create_akyos_order(
         code_client   = code_client, 
@@ -130,11 +133,18 @@ def create_order(
         date_reservee = date_reservee, 
         prestation    = prestation,
         nom_chantier  = nom_chantier, 
-        utilisateur   = utilisateur
+        utilisateur   = utilisateur,
+        ref_client    = ref_client,
+        superficie    = superficie,
+        piece_jointe1 = piece_jointe1,
+        piece_jointe2 = piece_jointe2,
+        piece_jointe3 = piece_jointe3,
+        piece_jointe4 = piece_jointe4,
+        piece_jointe5 = piece_jointe5,
     )
 
 
-    print('create_order',res,code_client,departement,zone,tarif_ht,montant_paye,date_reservee,prestation,nom_chantier,utilisateur)
+    print('create_order',res,code_client,departement,zone,tarif_ht,montant_paye,date_reservee,prestation,nom_chantier,utilisateur,ref_client,superficie)
 
 
     return res
