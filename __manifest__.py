@@ -19,6 +19,7 @@ InfoSaône - Module Odoo 16 pour France Filets (anti-chute-pro)
         'account',
         'purchase',
         'attachment_indexation',
+        'hr',
         'fastapi' # Pour API Rest Akyos pour Debian 12 Bookworm => https://apps.odoo.com/apps/modules/16.0/fastapi/
 ],
     'data' : [
@@ -34,6 +35,7 @@ InfoSaône - Module Odoo 16 pour France Filets (anti-chute-pro)
         'views/is_filet_view.xml',
         'views/is_suivi_budget_view.xml',
         'views/res_users_view.xml',
+        'views/is_document_employe_view.xml',
         'views/report_templates.xml',
         'views/menu.xml',
         'report/sale_report_templates.xml',

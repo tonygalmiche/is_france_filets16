@@ -10,3 +10,4 @@ from . import is_sale_order_line
 from . import is_filet
 from . import is_suivi_budget
 from . import is_res_partner
+from . import is_document_employe

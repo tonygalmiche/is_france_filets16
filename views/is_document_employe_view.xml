@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- is.type.document -->
+        <record id="is_type_document_tree" model="ir.ui.view">
+            <field name="name">is.type.document.tree</field>
+            <field name="model">is.type.document</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_type_document_form" model="ir.ui.view">
+            <field name="name">is.type.document.form</field>
+            <field name="model">is.type.document</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_type_document_search" model="ir.ui.view">
+            <field name="name">is.type.document.search</field>
+            <field name="model">is.type.document</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+               </search>
+            </field>
+        </record>
+        <record id="is_type_document_action" model="ir.actions.act_window">
+            <field name="name">Type de document</field>
+            <field name="res_model">is.type.document</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+
+
+        <!-- is.document.employe -->
+        <record id="is_document_employe_tree" model="ir.ui.view">
+            <field name="name">is.document.employe.tree</field>
+            <field name="model">is.document.employe</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="employe_id" widget="many2one_clickable"/>
+                    <field name="type_document_id"/>
+                    <field name="date_fin"/>
+                    <field name="piece_jointe_ids" widget="many2many_binary"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_document_employe_form" model="ir.ui.view">
+            <field name="name">is.document.employe.form</field>
+            <field name="model">is.document.employe</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="employe_id" widget="many2one_clickable"/>
+                                <field name="type_document_id"/>
+                                <field name="date_fin"/>
+                                <field name="piece_jointe_ids" widget="many2many_binary"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_document_employe_search" model="ir.ui.view">
+            <field name="name">is.document.employe.search</field>
+            <field name="model">is.document.employe</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employe_id"/>
+                    <field name="type_document_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_document_employe_action" model="ir.actions.act_window">
+            <field name="name">Documents du personnel</field>
+            <field name="res_model">is.document.employe</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+
+    </data>
+</openerp>
