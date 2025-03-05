@@ -1,10 +1,10 @@
 from typing import Annotated, List, Union
-from fastapi import APIRouter, Depends, Form, Header # Documentation FastAPI : https://fastapi.tiangolo.com/tutorial/ et https://github.com/OCA/rest-framework/tree/16.0/fastapi
-from pydantic import BaseModel
-from odoo import api, fields, models
-from odoo.api import Environment
-from odoo.addons.fastapi.dependencies import odoo_env
-import passlib
+from fastapi import APIRouter, Depends, Form, Header   # type: ignore # Documentation FastAPI : https://fastapi.tiangolo.com/tutorial/ et https://github.com/OCA/rest-framework/tree/16.0/fastapi
+from pydantic import BaseModel                         # type: ignore
+from odoo import api, fields, models                   # type: ignore
+from odoo.api import Environment                       # type: ignore
+from odoo.addons.fastapi.dependencies import odoo_env  # type: ignore
+import passlib                                         # type: ignore
 import uuid 
 
 
@@ -79,22 +79,12 @@ def get_dates(
     Retourne la liste des dates disponibles pour un département
     """
     res=verif_token(env, X_Openerp_Session_Id)
-
-    print('get_dates : verif_token=',res)
-
-
-
     if res!="":
         return res
     dates = env['is.departement'].get_dates(departement, limite)
     res=[]
     for date in dates:
         res.append(DateModel(date=date.strftime('%Y-%m-%d')))
-
-
-    print('get_dates : res=',res)
-
-
     return res
 
 
@@ -109,7 +99,14 @@ def create_order(
     date_reservee : Annotated[str, Form()],
     prestation    : Annotated[str, Form()],
     nom_chantier  : Annotated[str, Form()],
-    utilisateur   : Annotated[str, Form()],
+
+    complement_info_chantier   : Annotated[str, Form()] = None,
+    adresse_chantier           : Annotated[str, Form()] = None,
+    complement_adresse_chantier: Annotated[str, Form()] = None,
+    cp_chantier                : Annotated[str, Form()] = None,
+    ville_chantier             : Annotated[str, Form()] = None,
+
+    utilisateur   : Annotated[str, Form()] = None,
     ref_client    : Annotated[str, Form()] = None,
     superficie    : Annotated[str, Form()] = None,
     piece_jointe1 : Annotated[str, Form()] = None,
@@ -133,6 +130,13 @@ def create_order(
         date_reservee = date_reservee, 
         prestation    = prestation,
         nom_chantier  = nom_chantier, 
+
+        complement_info_chantier     = complement_info_chantier, 
+        adresse_chantier             = adresse_chantier, 
+        complement_adresse_chantier  = complement_adresse_chantier, 
+        cp_chantier                  = cp_chantier, 
+        ville_chantier               = ville_chantier, 
+
         utilisateur   = utilisateur,
         ref_client    = ref_client,
         superficie    = superficie,
@@ -142,11 +146,6 @@ def create_order(
         piece_jointe4 = piece_jointe4,
         piece_jointe5 = piece_jointe5,
     )
-
-
-    print('create_order',res,code_client,departement,zone,tarif_ht,montant_paye,date_reservee,prestation,nom_chantier,utilisateur,ref_client,superficie)
-
-
     return res
 
 
@@ -169,6 +168,25 @@ def create_depose(
     return res
 
 
+@akyos_api_router.post("/api-rest/update-dates")
+def update_dates(
+    env        : Annotated[Environment, Depends(odoo_env)],
+    numcde     : Annotated[str, Form()],
+    date_pose  : Annotated[str, Form()] = None,
+    date_depose: Annotated[str, Form()] = None,
+    X_Openerp_Session_Id: Annotated[Union[str, None], Header()] = None,
+): 
+    res=verif_token(env, X_Openerp_Session_Id)
+    if res!="":
+        return res
+    res = env['sale.order'].update_dates_akyos(
+        numcde      = numcde, 
+        date_pose   = date_pose, 
+        date_depose = date_depose,
+    )
+    return res
+
+
 @akyos_api_router.post("/auth/logout")
 def auth_logout(
     env  : Annotated[Environment, Depends(odoo_env)],
@@ -184,4 +202,6 @@ def auth_logout(
     return {
         "status": "logout",
     }
+
+
 

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-
-from odoo import api, fields, models, tools
-from datetime import datetime, timedelta
-from odoo.exceptions import UserError
-from odoo.http import request
+from odoo import api, fields, models, tools  # type: ignore
+from datetime import datetime, timedelta     # type: ignore
+from odoo.exceptions import UserError        # type: ignore
+from odoo.http import request                # type: ignore
 import os
 import base64
 from shutil import copy
@@ -286,6 +285,8 @@ class IsSaleOrderPlanning(models.Model):
 
 
 
+
+
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
@@ -393,58 +394,63 @@ class SaleOrder(models.Model):
             obj.is_filet_ids   = is_filet_ids
 
 
-    is_nom_chantier         = fields.Char(u'Nom du chantier')
-    is_date_previsionnelle  = fields.Date(u'Date prévisionnelle du chantier')
-    is_contact_id           = fields.Many2one('res.partner', u'Contact du client')
-    is_distance_chantier    = fields.Integer(u'Distance du chantier (en km)')
-    is_num_ancien_devis     = fields.Char(u'N°ancien devis')
-    is_ref_client           = fields.Char(u'Référence client')
-    is_motif_archivage_id   = fields.Many2one('is.motif.archivage', u'Motif archivage devis')
-    is_motif_archivage      = fields.Text(u'Motif archivage devis (commentaire)')
-    is_entete_devis         = fields.Text(u'Entête devis')
-    is_pied_devis           = fields.Text(u'Pied devis')
-    is_superficie           = fields.Char(u'Superficie', help=u"Champ utilisé pour le devis client")
-    is_superficie_m2        = fields.Integer(u'Superficie (m2)', help=u"Champ utilisé pour les calculs du CA/m2")
-    is_ca_nacelle           = fields.Float(u"CA nacelle"     , digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True)
-    is_ca_hors_nacelle      = fields.Float(u"CA hors nacelle", digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True)
-    is_ca_m2                = fields.Float(u"CA / m2", digits=(14,2), compute='_compute_ca_m2', readonly=True)
-    is_hauteur              = fields.Char(u'Hauteur')
-    is_nb_interventions     = fields.Char(u"Nombre d'interventions")
-    is_type_chantier        = fields.Selection(_TYPE_CHANTIER, u'Type de chantier')
-    is_type_prestation_id   = fields.Many2one('is.type.prestation', u'Type de prestation')
-    is_nacelle_id           = fields.Many2one('is.nacelle', u'Nacelle')
-    is_planning_ids         = fields.One2many('is.sale.order.planning', 'order_id', u"Planning")
+    is_nom_chantier                = fields.Char('Nom du chantier')
+    is_complement_info_chantier    = fields.Char('Complément info chantier')
+    is_ville_chantier              = fields.Char('Ville chantier')
+    is_cp_chantier                 = fields.Char('CP chantier')
+    is_adresse_chantier            = fields.Char('Adresse chantier')
+    is_complement_adresse_chantier = fields.Char('Complément adresse chantier')
+    is_date_previsionnelle  = fields.Date('Date prévisionnelle du chantier')
+    is_contact_id           = fields.Many2one('res.partner', 'Contact du client')
+    is_distance_chantier    = fields.Integer('Distance du chantier (en km)')
+    is_num_ancien_devis     = fields.Char('N°ancien devis')
+    is_ref_client           = fields.Char('Référence client')
+    is_motif_archivage_id   = fields.Many2one('is.motif.archivage', 'Motif archivage devis')
+    is_motif_archivage      = fields.Text('Motif archivage devis (commentaire)')
+    is_entete_devis         = fields.Text('Entête devis')
+    is_pied_devis           = fields.Text('Pied devis')
+    is_superficie           = fields.Char('Superficie', help=u"Champ utilisé pour le devis client")
+    is_superficie_m2        = fields.Integer('Superficie (m2)', help="Champ utilisé pour les calculs du CA/m2")
+    is_ca_nacelle           = fields.Float("CA nacelle"     , digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True)
+    is_ca_hors_nacelle      = fields.Float("CA hors nacelle", digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True)
+    is_ca_m2                = fields.Float("CA / m2", digits=(14,2), compute='_compute_ca_m2', readonly=True)
+    is_hauteur              = fields.Char('Hauteur')
+    is_nb_interventions     = fields.Char("Nombre d'interventions")
+    is_type_chantier        = fields.Selection(_TYPE_CHANTIER, 'Type de chantier')
+    is_type_prestation_id   = fields.Many2one('is.type.prestation', 'Type de prestation')
+    is_nacelle_id           = fields.Many2one('is.nacelle', 'Nacelle')
+    is_planning_ids         = fields.One2many('is.sale.order.planning', 'order_id', "Planning")
 
-    is_chantier_id          = fields.Many2one('is.chantier', u'Chantier', compute='_compute_chantier_id', readonly=True, store=False)
-    is_filet_ids            = fields.One2many('is.filet', 'chantier_id', u"Filets", compute='_compute_chantier_id', readonly=True, store=False)
+    is_chantier_id          = fields.Many2one('is.chantier', 'Chantier', compute='_compute_chantier_id', readonly=True, store=False)
+    is_filet_ids            = fields.One2many('is.filet', 'chantier_id', "Filets", compute='_compute_chantier_id', readonly=True, store=False)
 
-    is_etat_planning        = fields.Char(u"Etat planning", compute='_compute', readonly=True, store=True)
-    is_info_fiche_travail   = fields.Text(u'Informations fiche de travail')
-    is_piece_jointe_ids     = fields.Many2many('ir.attachment', 'sale_order_piece_jointe_attachment_rel', 'order_id', 'attachment_id', u'Pièces jointes')
-    is_region_id            = fields.Many2one('is.region'          , u'Région'            , related='partner_id.is_region_id'          , readonly=True)
-    is_secteur_activite_id  = fields.Many2one('is.secteur.activite', u"Secteur d'activité", related='partner_id.is_secteur_activite_id', readonly=True)
+    is_etat_planning        = fields.Char("Etat planning", compute='_compute', readonly=True, store=True)
+    is_info_fiche_travail   = fields.Text('Informations fiche de travail')
+    is_piece_jointe_ids     = fields.Many2many('ir.attachment', 'sale_order_piece_jointe_attachment_rel', 'order_id', 'attachment_id', 'Pièces jointes')
+    is_region_id            = fields.Many2one('is.region'          , 'Région'            , related='partner_id.is_region_id'          , readonly=True)
+    is_secteur_activite_id  = fields.Many2one('is.secteur.activite', "Secteur d'activité", related='partner_id.is_secteur_activite_id', readonly=True)
     is_controle_gestion_ids = fields.One2many('is.sale.order.controle.gestion', 'order_id', u"Contrôle de gestion")
 
-    is_nb_jours_prevu       = fields.Integer(u'Nb jours prévu')
-    is_nb_jours_realise     = fields.Integer(u'Nb jours réalisé')
-    is_ecart_jours          = fields.Integer(u'Écart jours'         , compute='_compute_nb_jours', readonly=True, store=True)
-    is_total_mo_prevu       = fields.Integer(u'Total MO prévu'      , compute='_compute_totaux'  , readonly=True, store=True)
-    is_total_achats_prevu   = fields.Integer(u'Total Achats prévu'  , compute='_compute_totaux'  , readonly=True, store=True)
-    is_total_mo_realise     = fields.Integer(u'Total MO réalisé'    , compute='_compute_totaux'  , readonly=True, store=True)
-    is_total_achats_realise = fields.Integer(u'Total Achats réalisé', compute='_compute_totaux'  , readonly=True, store=True)
-    is_ecart_mo             = fields.Integer(u'Écart MO'            , compute='_compute_totaux'  , readonly=True, store=True)
-    is_ecart_achat          = fields.Integer(u'Écart Achat'         , compute='_compute_totaux'  , readonly=True, store=True)
+    is_nb_jours_prevu       = fields.Integer('Nb jours prévu')
+    is_nb_jours_realise     = fields.Integer('Nb jours réalisé')
+    is_ecart_jours          = fields.Integer('Écart jours'         , compute='_compute_nb_jours', readonly=True, store=True)
+    is_total_mo_prevu       = fields.Integer('Total MO prévu'      , compute='_compute_totaux'  , readonly=True, store=True)
+    is_total_achats_prevu   = fields.Integer('Total Achats prévu'  , compute='_compute_totaux'  , readonly=True, store=True)
+    is_total_mo_realise     = fields.Integer('Total MO réalisé'    , compute='_compute_totaux'  , readonly=True, store=True)
+    is_total_achats_realise = fields.Integer('Total Achats réalisé', compute='_compute_totaux'  , readonly=True, store=True)
+    is_ecart_mo             = fields.Integer('Écart MO'            , compute='_compute_totaux'  , readonly=True, store=True)
+    is_ecart_achat          = fields.Integer('Écart Achat'         , compute='_compute_totaux'  , readonly=True, store=True)
 
-    is_classification       = fields.Char(u'Classification'         , compute='_compute_classification', readonly=True, store=True)
+    is_classification       = fields.Char('Classification'         , compute='_compute_classification', readonly=True, store=True)
 
     is_type_partenaire = fields.Selection([
         ('Client'      , 'Client'),
         ('Prospect'    , 'Prospect'),
         ('Prescripteur', 'Prescripteur'),
-    ], u'Type de partenaire' , compute='_compute_type_partenaire', readonly=True, store=True)
+    ], 'Type de partenaire' , compute='_compute_type_partenaire', readonly=True, store=True)
 
-    is_suivi    = fields.Integer(u'Suivi(%)' , help=u'Utilisé dans la gestion des offres')
-    is_suivi_ht = fields.Integer(u'Suivi (€)', help=u'Utilisé dans la gestion des offres', compute='_compute_suivi_ht', readonly=True, store=True)
+    is_suivi    = fields.Integer('Suivi(%)' , help='Utilisé dans la gestion des offres')
+    is_suivi_ht = fields.Integer('Suivi (€)', help='Utilisé dans la gestion des offres', compute='_compute_suivi_ht', readonly=True, store=True)
     is_montant_regle_en_ligne = fields.Float('Montant réglé en ligne (€)', digits=(14,2))
     is_utilisateur_reserve    = fields.Char("Utilisateur ayant réservé le chantier")
 
@@ -480,6 +486,11 @@ class SaleOrder(models.Model):
                 date_reservee=False, 
                 prestation=False,
                 nom_chantier=False, 
+                complement_info_chantier=False, 
+                adresse_chantier=False, 
+                complement_adresse_chantier=False, 
+                cp_chantier=False, 
+                ville_chantier=False, 
                 utilisateur=False,
                 ref_client=False,
                 superficie=False,
@@ -526,12 +537,18 @@ class SaleOrder(models.Model):
         if not err:
             vals={
                 'partner_id'               : partner.id,
-                'is_nom_chantier'          : nom_chantier,
+                'is_nom_chantier'               : nom_chantier,
+                'is_complement_info_chantier'   : complement_info_chantier,
+                'is_adresse_chantier'           : adresse_chantier,
+                'is_complement_adresse_chantier': complement_adresse_chantier,
+                'is_cp_chantier'                : cp_chantier,
+                'is_ville_chantier'             : ville_chantier,
                 'is_montant_regle_en_ligne': montant_paye,
                 'is_utilisateur_reserve'   : utilisateur,
                 'is_ref_client'            : ref_client,
                 'is_superficie'            : superficie,
             }
+
             order = self.env['sale.order'].create(vals)
             _logger.info("create_akyos_order : Création commande %s"%order.name)
 
@@ -616,6 +633,57 @@ class SaleOrder(models.Model):
             line = self.env['is.sale.order.planning'].sudo().create(vals)
         res["err"]=err
         return(res)
+
+
+
+    def update_dates_akyos(self, numcde=False, date_pose=False, date_depose=False):
+        res={}
+        err=False
+        orders = self.env['sale.order'].search([('name','=',numcde)], limit=1)
+        if len(orders)==0:
+            err="Commande client %s non trouvée dans Odoo"%(numcde)
+        else:
+            order=orders[0]
+            if date_pose:
+                domain=[
+                    ('order_id','=',order.id),
+                    ('pose_depose','=','pose'),
+                ]
+                poses = self.env['is.sale.order.planning'].sudo().search(domain, limit=1)
+                if len(poses)==0:
+                    err="Aucune date de pose trouvée pour la commande client %s dans Odoo"%(numcde)
+                else:
+                    for pose in poses:
+                        vals={
+                            'date_debut': date_pose,
+                            'date_fin'  : date_pose,
+                        }
+                        pose.sudo().write(vals)
+            if date_depose:
+                domain=[
+                    ('order_id','=',order.id),
+                    ('pose_depose','=','depose'),
+                ]
+                deposes = self.env['is.sale.order.planning'].sudo().search(domain, limit=1)
+                if len(deposes)==0:
+                    err="Aucune date de dépose trouvée pour la commande client %s dans Odoo"%(numcde)
+                else:
+                    for depose in deposes:
+                        vals={
+                            'date_debut': date_depose,
+                            'date_fin'  : date_depose,
+                        }
+                        depose.sudo().write(vals)
+
+        res["err"]=err
+        return(res)
+
+
+
+
+
+
+
 
 
 class IsCreationPlanningPreparation(models.Model):
