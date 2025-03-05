@@ -337,21 +337,21 @@
             <field name="name">is_sale_order_planning_sms_form</field>
             <field name="model">is.sale.order.planning</field>
             <field name="arch" type="xml">
-                <form create="0">
+                <form create="0" edit="0">
                     <sheet>
                         <group>
+                            <field name="order_id"     readonly="1"/>
                             <field name="date_debut"   readonly="1"/>
                             <field name="date_fin"     readonly="1"/>
                             <field name="commentaire"  readonly="1"/>
                             <field name="equipe_ids"   readonly="1" widget="many2many_tags" />
                             <field name="pose_depose"  readonly="1"/>
                             <field name="etat"         readonly="1"/>
-                            <field name="sms_heure"/>
+                            <field name="sms_heure"    readonly="1"/>
                             <field name="sms_mobile"   readonly="1"/>
                             <field name="sms_resultat" readonly="1"/>
                             <field name="sms_message"  readonly="1"/>
                             <field name="sms_quota"    readonly="1"/>
-                            <field name="order_id"     readonly="1"/>
                         </group>
                     </sheet>
                 </form>
@@ -361,16 +361,21 @@
             <field name="name">is_sale_order_planning_sms_tree</field>
             <field name="model">is.sale.order.planning</field>
             <field name="arch" type="xml">
-                <tree>
-                    <field name="date_debut"/>
-                    <field name="date_fin"/>
-                    <field name="pose_depose"/>
-                    <field name="etat"/>
-                    <field name="sms_heure"/>
-                    <field name="sms_mobile"/>
-                    <field name="sms_resultat"/>
-                    <field name="sms_quota"/>
-                    <field name="order_id"/>
+                <tree create="0">
+                    <field name="order_id"                     readonly="1" widget="many2one_clickable"/>
+                    <field name="date_debut"   optional="show" readonly="1"/>
+                    <field name="date_fin"     optional="show" readonly="1"/>
+                    <field name="commentaire"  optional="show" readonly="1"/>
+                    <field name="equipe_ids"   optional="show" readonly="1" widget="many2many_tags"/>
+                    <field name="pose_depose"  optional="show" readonly="1"/>
+                    <field name="etat"         optional="show" readonly="1"/>
+                    <field name="realisation"  optional="show" readonly="1"/>
+                    <field name="pv_realise"   optional="show" readonly="1"/>
+                    <field name="sms_heure"    optional="hide" readonly="1" string="SMS"/>
+                    <field name="sms_mobile"   optional="hide" readonly="1" string="SMS"/>
+                    <field name="sms_resultat" optional="hide" readonly="1" string="Err"/>
+                    <field name="sms_quota"    optional="hide" readonly="1" string="Err"/>
+                    <field name="alerte"       optional="show" readonly="1"/>                        
                 </tree>
             </field>
         </record>
@@ -388,11 +393,17 @@
                </search>
             </field>
         </record>
-        <record id="is_sale_order_planning_action" model="ir.actions.act_window">
+        <record id="is_sale_order_planning_sms_action" model="ir.actions.act_window">
             <field name="name">SMS</field>
             <field name="res_model">is.sale.order.planning</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('sms_mobile','!=', '')]</field>
+        </record>
+        <record id="is_sale_order_planning_action" model="ir.actions.act_window">
+            <field name="name">Planning</field>
+            <field name="res_model">is.sale.order.planning</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
         </record>
 
 
@@ -1135,5 +1146,70 @@
                 </form>
             </field>
         </record>
+
+
+        <!-- is.sale.order.planning -->
+        <!-- <record id="is_sale_order_planning_form_view" model="ir.ui.view">
+            <field name="name">is_sale_order_planning_from_view</field>
+            <field name="model">is.sale.order.planning</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <field name="order_id"     readonly="1"/>
+                            <field name="date_debut"   readonly="1"/>
+                            <field name="date_fin"     readonly="1"/>
+                            <field name="commentaire"  readonly="1"/>
+                            <field name="equipe_ids"   readonly="1" widget="many2many_tags"/>
+                            <field name="pose_depose"  readonly="1"/>
+                            <field name="etat"         readonly="1"/>
+                            <field name="realisation"  readonly="1"/>
+                            <field name="pv_realise"   readonly="1"/>
+                            <field name="sms_heure"    readonly="1"/>
+                            <field name="sms_resultat" readonly="1"/>
+                            <field name="alerte"       readonly="1"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_sale_order_planning_tree_view">
+            <field name="name">is_sale_order_planning_tree_view</field>
+            <field name="model">is.sale.order.planning</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="order_id"                     readonly="1" widget="many2one_clickable"/>
+                    <field name="date_debut"   optional="show" readonly="1"/>
+                    <field name="date_fin"     optional="show" readonly="1"/>
+                    <field name="commentaire"  optional="show" readonly="1"/>
+                    <field name="equipe_ids"   optional="show" readonly="1" widget="many2many_tags"/>
+                    <field name="pose_depose"  optional="show" readonly="1"/>
+                    <field name="etat"         optional="show" readonly="1"/>
+                    <field name="realisation"  optional="show" readonly="1"/>
+                    <field name="pv_realise"   optional="show" readonly="1"/>
+                    <field name="sms_heure"    optional="hide" readonly="1" string="SMS"/>
+                    <field name="sms_resultat" optional="hide" readonly="1" string="Err"/>
+                    <field name="alerte"       optional="show" readonly="1"/>                        
+                </tree>
+            </field>
+        </record>
+        <record id="is_sale_order_planning_search_view" model="ir.ui.view">
+            <field name="name">is_sale_order_planning_search_view</field>
+            <field name="model">is.sale.order.planning</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="order_id"/>
+                    <field name="pose_depose"/>
+                    <field name="equipe_ids"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_sale_order_planning_action" model="ir.actions.act_window">
+            <field name="name">Planning</field>
+            <field name="res_model">is.sale.order.planning</field>
+            <field name="view_mode">tree,form</field>
+        </record> -->
+
     </data>
 </odoo>

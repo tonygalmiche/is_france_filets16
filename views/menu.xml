@@ -52,11 +52,25 @@
         sequence="12"
     />
     <menuitem 
-        id="is_sale_order_planning_menu"
-        action="is_sale_order_planning_action"
+        id="is_sale_order_planning_sms_menu"
+        action="is_sale_order_planning_sms_action"
         parent="sale.sale_order_menu"
         sequence="12"
     />
+
+
+    <menuitem 
+        id="is_sale_order_planning_menu"
+        action="is_sale_order_planning_action"
+        parent="sale.sale_order_menu"
+        sequence="13"
+    />
+
+
+
+
+
+
     <menuitem 
         id="is_sale_order_controle_gestion_menu"
         action="is_sale_order_controle_gestion_action"
@@ -108,7 +122,7 @@
 
 
 
-    <!-- Tables -->>
+    <!-- Tables -->
     <menuitem 
         id="is_ventes_table_menu"
         sequence="900" 
@@ -178,6 +192,12 @@
         parent="is_ventes_table_menu"
         action="is_controle_gestion_action"
     />
+
+
+
+
+
+
     <menuitem 
         id="is_groupe_client_menu"
         sequence="80" 
