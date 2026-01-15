@@ -394,65 +394,65 @@ class SaleOrder(models.Model):
             obj.is_filet_ids   = is_filet_ids
 
 
-    is_nom_chantier                = fields.Char('Nom du chantier')
-    is_complement_info_chantier    = fields.Char('Complément info chantier')
-    is_ville_chantier              = fields.Char('Ville chantier')
-    is_cp_chantier                 = fields.Char('CP chantier')
-    is_adresse_chantier            = fields.Char('Adresse chantier')
-    is_complement_adresse_chantier = fields.Char('Complément adresse chantier')
-    is_date_previsionnelle  = fields.Date('Date prévisionnelle du chantier')
-    is_contact_id           = fields.Many2one('res.partner', 'Contact du client')
-    is_distance_chantier    = fields.Integer('Distance du chantier (en km)')
-    is_num_ancien_devis     = fields.Char('N°ancien devis')
-    is_ref_client           = fields.Char('Référence client')
-    is_motif_archivage_id   = fields.Many2one('is.motif.archivage', 'Motif archivage devis')
-    is_motif_archivage      = fields.Text('Motif archivage devis (commentaire)')
-    is_entete_devis         = fields.Text('Entête devis')
-    is_pied_devis           = fields.Text('Pied devis')
-    is_superficie           = fields.Char('Superficie', help=u"Champ utilisé pour le devis client")
-    is_superficie_m2        = fields.Integer('Superficie (m2)', help="Champ utilisé pour les calculs du CA/m2")
-    is_ca_nacelle           = fields.Float("CA nacelle"     , digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True)
-    is_ca_hors_nacelle      = fields.Float("CA hors nacelle", digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True)
-    is_ca_m2                = fields.Float("CA / m2", digits=(14,2), compute='_compute_ca_m2', readonly=True)
-    is_hauteur              = fields.Char('Hauteur')
-    is_nb_interventions     = fields.Char("Nombre d'interventions")
-    is_type_chantier        = fields.Selection(_TYPE_CHANTIER, 'Type de chantier')
-    is_type_prestation_id   = fields.Many2one('is.type.prestation', 'Type de prestation')
-    is_nacelle_id           = fields.Many2one('is.nacelle', 'Nacelle')
+    is_nom_chantier                = fields.Char('Nom du chantier', tracking=True)
+    is_complement_info_chantier    = fields.Char('Complément info chantier', tracking=True)
+    is_ville_chantier              = fields.Char('Ville chantier', tracking=True)
+    is_cp_chantier                 = fields.Char('CP chantier', tracking=True)
+    is_adresse_chantier            = fields.Char('Adresse chantier', tracking=True)
+    is_complement_adresse_chantier = fields.Char('Complément adresse chantier', tracking=True)
+    is_date_previsionnelle  = fields.Date('Date prévisionnelle du chantier', tracking=True)
+    is_contact_id           = fields.Many2one('res.partner', 'Contact du client', tracking=True)
+    is_distance_chantier    = fields.Integer('Distance du chantier (en km)', tracking=True)
+    is_num_ancien_devis     = fields.Char('N°ancien devis', tracking=True)
+    is_ref_client           = fields.Char('Référence client', tracking=True)
+    is_motif_archivage_id   = fields.Many2one('is.motif.archivage', 'Motif archivage devis', tracking=True)
+    is_motif_archivage      = fields.Text('Motif archivage devis (commentaire)', tracking=True)
+    is_entete_devis         = fields.Text('Entête devis', tracking=True)
+    is_pied_devis           = fields.Text('Pied devis', tracking=True)
+    is_superficie           = fields.Char('Superficie', help=u"Champ utilisé pour le devis client", tracking=True)
+    is_superficie_m2        = fields.Integer('Superficie (m2)', help="Champ utilisé pour les calculs du CA/m2", tracking=True)
+    is_ca_nacelle           = fields.Float("CA nacelle"     , digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True, tracking=True)
+    is_ca_hors_nacelle      = fields.Float("CA hors nacelle", digits=(14,2), compute='_compute_ca_nacelle', readonly=True, store=True, tracking=True)
+    is_ca_m2                = fields.Float("CA / m2", digits=(14,2), compute='_compute_ca_m2', readonly=True, tracking=True)
+    is_hauteur              = fields.Char('Hauteur', tracking=True)
+    is_nb_interventions     = fields.Char("Nombre d'interventions", tracking=True)
+    is_type_chantier        = fields.Selection(_TYPE_CHANTIER, 'Type de chantier', tracking=True)
+    is_type_prestation_id   = fields.Many2one('is.type.prestation', 'Type de prestation', tracking=True)
+    is_nacelle_id           = fields.Many2one('is.nacelle', 'Nacelle', tracking=True)
     is_planning_ids         = fields.One2many('is.sale.order.planning', 'order_id', "Planning")
 
     is_chantier_id          = fields.Many2one('is.chantier', 'Chantier', compute='_compute_chantier_id', readonly=True, store=False)
     is_filet_ids            = fields.One2many('is.filet', 'chantier_id', "Filets", compute='_compute_chantier_id', readonly=True, store=False)
 
-    is_etat_planning        = fields.Char("Etat planning", compute='_compute', readonly=True, store=True)
-    is_info_fiche_travail   = fields.Text('Informations fiche de travail')
+    is_etat_planning        = fields.Char("Etat planning", compute='_compute', readonly=True, store=True, tracking=True)
+    is_info_fiche_travail   = fields.Text('Informations fiche de travail', tracking=True)
     is_piece_jointe_ids     = fields.Many2many('ir.attachment', 'sale_order_piece_jointe_attachment_rel', 'order_id', 'attachment_id', 'Pièces jointes')
-    is_region_id            = fields.Many2one('is.region'          , 'Région'            , related='partner_id.is_region_id'          , readonly=True)
-    is_secteur_activite_id  = fields.Many2one('is.secteur.activite', "Secteur d'activité", related='partner_id.is_secteur_activite_id', readonly=True)
+    is_region_id            = fields.Many2one('is.region'          , 'Région'            , related='partner_id.is_region_id'          , readonly=True, tracking=True)
+    is_secteur_activite_id  = fields.Many2one('is.secteur.activite', "Secteur d'activité", related='partner_id.is_secteur_activite_id', readonly=True, tracking=True)
     is_controle_gestion_ids = fields.One2many('is.sale.order.controle.gestion', 'order_id', u"Contrôle de gestion")
 
-    is_nb_jours_prevu       = fields.Integer('Nb jours prévu')
-    is_nb_jours_realise     = fields.Integer('Nb jours réalisé')
-    is_ecart_jours          = fields.Integer('Écart jours'         , compute='_compute_nb_jours', readonly=True, store=True)
-    is_total_mo_prevu       = fields.Integer('Total MO prévu'      , compute='_compute_totaux'  , readonly=True, store=True)
-    is_total_achats_prevu   = fields.Integer('Total Achats prévu'  , compute='_compute_totaux'  , readonly=True, store=True)
-    is_total_mo_realise     = fields.Integer('Total MO réalisé'    , compute='_compute_totaux'  , readonly=True, store=True)
-    is_total_achats_realise = fields.Integer('Total Achats réalisé', compute='_compute_totaux'  , readonly=True, store=True)
-    is_ecart_mo             = fields.Integer('Écart MO'            , compute='_compute_totaux'  , readonly=True, store=True)
-    is_ecart_achat          = fields.Integer('Écart Achat'         , compute='_compute_totaux'  , readonly=True, store=True)
+    is_nb_jours_prevu       = fields.Integer('Nb jours prévu', tracking=True)
+    is_nb_jours_realise     = fields.Integer('Nb jours réalisé', tracking=True)
+    is_ecart_jours          = fields.Integer('Écart jours'         , compute='_compute_nb_jours', readonly=True, store=True, tracking=True)
+    is_total_mo_prevu       = fields.Integer('Total MO prévu'      , compute='_compute_totaux'  , readonly=True, store=True, tracking=True)
+    is_total_achats_prevu   = fields.Integer('Total Achats prévu'  , compute='_compute_totaux'  , readonly=True, store=True, tracking=True)
+    is_total_mo_realise     = fields.Integer('Total MO réalisé'    , compute='_compute_totaux'  , readonly=True, store=True, tracking=True)
+    is_total_achats_realise = fields.Integer('Total Achats réalisé', compute='_compute_totaux'  , readonly=True, store=True, tracking=True)
+    is_ecart_mo             = fields.Integer('Écart MO'            , compute='_compute_totaux'  , readonly=True, store=True, tracking=True)
+    is_ecart_achat          = fields.Integer('Écart Achat'         , compute='_compute_totaux'  , readonly=True, store=True, tracking=True)
 
-    is_classification       = fields.Char('Classification'         , compute='_compute_classification', readonly=True, store=True)
+    is_classification       = fields.Char('Classification'         , compute='_compute_classification', readonly=True, store=True, tracking=True)
 
     is_type_partenaire = fields.Selection([
         ('Client'      , 'Client'),
         ('Prospect'    , 'Prospect'),
         ('Prescripteur', 'Prescripteur'),
-    ], 'Type de partenaire' , compute='_compute_type_partenaire', readonly=True, store=True)
+    ], 'Type de partenaire' , compute='_compute_type_partenaire', readonly=True, store=True, tracking=True)
 
-    is_suivi    = fields.Integer('Suivi(%)' , help='Utilisé dans la gestion des offres')
-    is_suivi_ht = fields.Integer('Suivi (€)', help='Utilisé dans la gestion des offres', compute='_compute_suivi_ht', readonly=True, store=True)
-    is_montant_regle_en_ligne = fields.Float('Montant réglé en ligne (€)', digits=(14,2))
-    is_utilisateur_reserve    = fields.Char("Utilisateur ayant réservé le chantier")
+    is_suivi    = fields.Integer('Suivi(%)' , help='Utilisé dans la gestion des offres', tracking=True)
+    is_suivi_ht = fields.Integer('Suivi (€)', help='Utilisé dans la gestion des offres', compute='_compute_suivi_ht', readonly=True, store=True, tracking=True)
+    is_montant_regle_en_ligne = fields.Float('Montant réglé en ligne (€)', digits=(14,2), tracking=True)
+    is_utilisateur_reserve    = fields.Char("Utilisateur ayant réservé le chantier", tracking=True)
 
 
     def get_nacelles(self):
@@ -600,6 +600,137 @@ class SaleOrder(models.Model):
                 'pose_depose': 'pose',
             }
             line = self.env['is.sale.order.planning'].sudo().create(vals)
+        res["err"]=err
+        return(res)
+
+
+    def update_akyos_order(self, 
+                numcde=False,
+                code_client=False, 
+                departement=False, 
+                zone=False, 
+                tarif_ht=False, 
+                montant_paye=False, 
+                date_reservee=False, 
+                prestation=False,
+                nom_chantier=False, 
+                complement_info_chantier=False, 
+                adresse_chantier=False, 
+                complement_adresse_chantier=False, 
+                cp_chantier=False, 
+                ville_chantier=False, 
+                utilisateur=False,
+                ref_client=False,
+                superficie=False,
+            ):
+        
+        res={}
+        err=False
+        product = False
+        partner = False
+        equipe = False
+        
+        # Recherche de la commande
+        orders = self.env['sale.order'].sudo().search([('name','=',numcde)], limit=1)
+        if len(orders)==0:
+            err="Commande client %s non trouvée dans Odoo"%(numcde)
+        else:
+            order=orders[0]
+        
+        # Vérification de la prestation (si fournie)
+        prestations={
+            1: "PRESTATION-01",
+            2: "PRESTATION-02",
+        }
+        if not err and prestation:
+            prestation = int(prestation)
+            if prestation not in prestations:
+                err="prestation inconnue ou non définie"
+            else:
+                code = prestations[prestation]
+                products = self.env['product.template'].sudo().search([('default_code','=',code)], limit=1)
+                if len(products):
+                    product=products[0]
+                else:
+                    err="prestation %s (%s) non trouvée dans Odoo"%(prestation,code)
+        
+        # Vérification du client (si fourni)
+        if not err and code_client:
+            partners = self.env['res.partner'].sudo().search([('is_code_client_ebp','=',code_client)], limit=1)
+            if len(partners)==0:
+                err="Code client %s non trouvée dans Odoo"%(code_client)
+            else:
+                partner=partners[0]
+        
+        # Vérification du département et de l'équipe (si fournis)
+        if not err and departement and date_reservee:
+            departements = self.env['is.departement'].sudo().search([('name','=',departement)], limit=1)
+            if len(departements)==0:
+                err="Département (%s) non trouvée dans Odoo"%(departement)
+            else:
+                departement_obj=departements[0]
+                date=datetime.strptime(date_reservee, '%Y-%m-%d').date()
+                equipe=departement_obj.get_equipe(date)
+                if not equipe:
+                    err="Aucune équipe disponible pour le %s"%(date)
+        
+        # Mise à jour de la commande
+        if not err:
+            vals={}
+            if partner:
+                vals['partner_id'] = partner.id
+            if nom_chantier:
+                vals['is_nom_chantier'] = nom_chantier
+            if complement_info_chantier:
+                vals['is_complement_info_chantier'] = complement_info_chantier
+            if adresse_chantier:
+                vals['is_adresse_chantier'] = adresse_chantier
+            if complement_adresse_chantier:
+                vals['is_complement_adresse_chantier'] = complement_adresse_chantier
+            if cp_chantier:
+                vals['is_cp_chantier'] = cp_chantier
+            if ville_chantier:
+                vals['is_ville_chantier'] = ville_chantier
+            if montant_paye:
+                vals['is_montant_regle_en_ligne'] = montant_paye
+            if utilisateur:
+                vals['is_utilisateur_reserve'] = utilisateur
+            if ref_client:
+                vals['is_ref_client'] = ref_client
+            if superficie:
+                vals['is_superficie'] = superficie
+            
+            if vals:
+                order.write(vals)
+            _logger.info("update_akyos_order : Mise à jour commande %s"%order.name)
+
+            # Mise à jour de la ligne de commande (si prestation ou tarif fournis)
+            if order.order_line and (product or tarif_ht):
+                line = order.order_line[0]
+                line_vals = {}
+                if product:
+                    line_vals['product_id'] = product.id
+                    line_vals['name'] = product.name
+                if tarif_ht:
+                    line_vals['price_unit'] = tarif_ht
+                if line_vals:
+                    line.write(line_vals)
+            
+            # Mise à jour du planning (pose) si date_reservee et equipe fournis
+            if date_reservee and equipe:
+                plannings = self.env['is.sale.order.planning'].sudo().search([
+                    ('order_id','=',order.id),
+                    ('pose_depose','=','pose'),
+                ], limit=1)
+                if plannings:
+                    plannings[0].write({
+                        'date_debut' : date_reservee,
+                        'date_fin'   : date_reservee,
+                        'equipe_ids' : [(6,0,[equipe.id])],
+                    })
+            
+            res["numcde"]=order.name
+        
         res["err"]=err
         return(res)
 

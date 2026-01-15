@@ -149,6 +149,58 @@ def create_order(
     return res
 
 
+@akyos_api_router.post("/api-rest/update-order")
+def update_order(
+    env           : Annotated[Environment, Depends(odoo_env)],
+    numcde        : Annotated[str, Form()],
+    code_client   : Annotated[str, Form()] = None,
+    departement   : Annotated[str, Form()] = None,
+    zone          : Annotated[str, Form()] = None,
+    tarif_ht      : Annotated[str, Form()] = None,
+    montant_paye  : Annotated[str, Form()] = None,
+    date_reservee : Annotated[str, Form()] = None,
+    prestation    : Annotated[str, Form()] = None,
+    nom_chantier  : Annotated[str, Form()] = None,
+
+    complement_info_chantier   : Annotated[str, Form()] = None,
+    adresse_chantier           : Annotated[str, Form()] = None,
+    complement_adresse_chantier: Annotated[str, Form()] = None,
+    cp_chantier                : Annotated[str, Form()] = None,
+    ville_chantier             : Annotated[str, Form()] = None,
+
+    utilisateur   : Annotated[str, Form()] = None,
+    ref_client    : Annotated[str, Form()] = None,
+    superficie    : Annotated[str, Form()] = None,
+    X_Openerp_Session_Id: Annotated[Union[str, None], Header()] = None,
+): 
+    res=verif_token(env, X_Openerp_Session_Id)
+    if res!="":
+        return res
+    
+    res=env['sale.order'].update_akyos_order(
+        numcde        = numcde,
+        code_client   = code_client, 
+        departement   = departement, 
+        zone          = zone, 
+        tarif_ht      = tarif_ht, 
+        montant_paye  = montant_paye, 
+        date_reservee = date_reservee, 
+        prestation    = prestation,
+        nom_chantier  = nom_chantier, 
+
+        complement_info_chantier     = complement_info_chantier, 
+        adresse_chantier             = adresse_chantier, 
+        complement_adresse_chantier  = complement_adresse_chantier, 
+        cp_chantier                  = cp_chantier, 
+        ville_chantier               = ville_chantier, 
+
+        utilisateur   = utilisateur,
+        ref_client    = ref_client,
+        superficie    = superficie,
+    )
+    return res
+
+
 @akyos_api_router.post("/api-rest/create-depose")
 def create_depose(
     env          : Annotated[Environment, Depends(odoo_env)],
