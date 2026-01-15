@@ -28,6 +28,7 @@ InfoSaône - Module Odoo 16 pour France Filets (anti-chute-pro)
         'security/ir.model.access.xml',
         'views/res_company_view.xml',
         'views/partner_view.xml',
+        'views/product_view.xml',
         'views/sale_view.xml',
         'views/account_move_view.xml',
         'views/is_export_compta_view.xml',

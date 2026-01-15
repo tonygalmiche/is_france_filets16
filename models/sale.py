@@ -3,6 +3,7 @@ from odoo import api, fields, models, tools  # type: ignore
 from datetime import datetime, timedelta     # type: ignore
 from odoo.exceptions import UserError        # type: ignore
 from odoo.http import request                # type: ignore
+from markupsafe import Markup
 import os
 import base64
 from shutil import copy
@@ -240,7 +241,7 @@ class IsSaleOrderPlanning(models.Model):
         ('pose'  , 'Pose'),
         ('depose', 'Dépose'),
     ], u'Pose / Dépose')
-    etat = fields.Selection(_ETAT_PLANNING, u'État', default='a_confirmer')
+    etat = fields.Selection(_ETAT_PLANNING, u'État', default='a_faire')
     realisation    = fields.Text(u'Réalisation', help=u'Réalisation du chantier', readonly=True)
     pv_realise = fields.Char('PV')
 
@@ -262,6 +263,13 @@ class IsSaleOrderPlanning(models.Model):
                 return {'warning': warning}
 
 
+    @api.onchange('date_debut')
+    def _onchange_date_debut(self):
+        for obj in self:
+            if obj.date_debut:
+                obj.date_fin = obj.date_debut
+
+
     def get_avertissements(self,obj,equipe,date):
         avertissements=[]
 
@@ -281,6 +289,27 @@ class IsSaleOrderPlanning(models.Model):
         #*******************************************************
 
         return avertissements
+
+
+    def _update_date_previsionnelle(self):
+        """Met à jour is_date_previsionnelle sur la commande si pose_depose='pose' et date_debut est renseigné"""
+        for obj in self:
+            if obj.pose_depose == 'pose' and obj.date_debut and obj.order_id:
+                obj.order_id.is_date_previsionnelle = obj.date_debut
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(IsSaleOrderPlanning, self).create(vals_list)
+        records._update_date_previsionnelle()
+        return records
+
+
+    def write(self, vals):
+        res = super(IsSaleOrderPlanning, self).write(vals)
+        if 'date_debut' in vals or 'pose_depose' in vals:
+            self._update_date_previsionnelle()
+        return res
 
 
 
@@ -810,11 +839,37 @@ class SaleOrder(models.Model):
         return(res)
 
 
+class SaleOrderLine(models.Model):
+    _inherit = "sale.order.line"
 
+    is_type_prestation_id = fields.Many2one(
+        'is.type.prestation',
+        'Type de prestation',
+        related='product_id.product_tmpl_id.is_type_prestation_id',
+        readonly=True,
+        store=True
+    )
 
+    def _update_order_type_prestation(self):
+        """Met à jour is_type_prestation_id sur la commande à partir du produit de la ligne"""
+        for line in self:
+            if line.product_id and line.order_id:
+                # Récupérer le type de prestation du product.template
+                product_tmpl = line.product_id.product_tmpl_id
+                if product_tmpl and product_tmpl.is_type_prestation_id:
+                    line.order_id.is_type_prestation_id = product_tmpl.is_type_prestation_id
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super(SaleOrderLine, self).create(vals_list)
+        lines._update_order_type_prestation()
+        return lines
 
-
+    def write(self, vals):
+        res = super(SaleOrderLine, self).write(vals)
+        if 'product_id' in vals:
+            self._update_order_type_prestation()
+        return res
 
 
 class IsCreationPlanningPreparation(models.Model):
@@ -915,7 +970,7 @@ class IsCreationPlanning(models.Model):
 
             for row in res:
                 message.append(row[0])
-        return '<br />'.join(message)
+        return Markup('<br />'.join(message)) if message else ''
 
 
     def get_orders(self,date_debut,date_fin):
@@ -998,7 +1053,7 @@ class IsCreationPlanning(models.Model):
                 html+=(row[2] or '')+'<br />'
                 html+=(row[3] or '')+' - '+(row[4] or '')+'<br />'
                 html+=(row[5] or '')
-                chantiers.append(html)
+                chantiers.append(Markup(html))
             if retour=='order':
                 chantiers.append(row[0])
             if retour=='planning':

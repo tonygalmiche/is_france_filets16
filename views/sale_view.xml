@@ -63,6 +63,10 @@
                     <field name="is_ca_hors_nacelle"/>
                     <field name="is_suivi"/>
                 </field>
+                <!-- Ajout du champ is_type_prestation_id dans les lignes de commande -->
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_template_id']" position="after">
+                    <field name="is_type_prestation_id" optional="hide"/>
+                </xpath>
                 <field name="payment_term_id" position="after">
                     <field name="is_montant_regle_en_ligne"/>
                     <field name="is_date_previsionnelle"/>
@@ -210,6 +214,33 @@
                     <field name="is_classification"/>
                     <field name="is_region_id"/>
                 </field>
+            </field>
+        </record>
+
+        <!-- Vue Pivot pour les commandes par mois et type de prestation -->
+        <record id="is_sale_order_pivot_view" model="ir.ui.view">
+            <field name="name">is_sale_order_pivot_view</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <pivot string="Commandes">
+                    <field name="date_order" type="row" interval="month"/>
+                    <field name="is_type_prestation_id" type="col"/>
+                    <field name="amount_untaxed" type="measure"/>
+                    <field name="amount_total" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Vue Graph pour les commandes par mois et type de prestation -->
+        <record id="is_sale_order_graph_view" model="ir.ui.view">
+            <field name="name">is_sale_order_graph_view</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <graph string="Commandes" type="bar" stacked="True">
+                    <field name="date_order" type="row" interval="month"/>
+                    <field name="is_type_prestation_id" type="row"/>
+                    <field name="amount_untaxed" type="measure"/>
+                </graph>
             </field>
         </record>
 

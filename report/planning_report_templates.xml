@@ -7,7 +7,7 @@
                 <div class="col-3">
                     <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 100px;" alt="Logo"/>
                 </div>
-                <div class="col-9 text-right" style="font-size:11pt">
+                <div class="col-9 text-end" style="font-size:11pt">
                     <h2 style="font-size:18pt">Planning du <span t-field="o.date_debut"/> au <span t-field="o.date_fin"/></h2>
                     <b><div t-field="company.name"/></b>
                     <div><span t-field="company.street"/> - <span t-field="company.zip"/> <span t-field="company.city"/></div>
@@ -70,11 +70,11 @@
                                         <td t-att-style="style">
                                             <t t-set="message" t-value="o.get_message(e,d)"/>
                                             <t t-if="message">
-                                                <b><div style="background-color:Orange" t-raw="message"/></b>
+                                                <b><div style="background-color:Orange" t-out="message"/></b>
                                             </t>
                                             <b><span t-esc="absence"/></b>
                                             <t t-foreach="o.get_chantiers(e,d)" t-as="c">
-                                                <div t-raw="c"/>
+                                                <div t-out="c"/>
                                             </t>
                                         </td>
                                     </t>
@@ -113,11 +113,11 @@
                                         <td t-att-style="style">
                                             <t t-set="message" t-value="o.get_message(e,d)"/>
                                             <t t-if="message">
-                                                <b><div style="background-color:Orange" t-raw="message"/></b>
+                                                <b><div style="background-color:Orange" t-out="message"/></b>
                                             </t>
                                             <b><span t-esc="absence"/></b>
                                             <t t-foreach="o.get_chantiers(e,d)" t-as="c">
-                                                <div t-raw="c"/>
+                                                <div t-out="c"/>
                                             </t>
                                         </td>
                                     </t>
