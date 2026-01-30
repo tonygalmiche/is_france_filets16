@@ -1017,7 +1017,11 @@ class IsCreationPlanning(models.Model):
                 isop.pose_depose,
                 isop.etat,
                 so.id,
-                isop.id
+                isop.id,
+                so.is_adresse_chantier,
+                so.is_complement_adresse_chantier,
+                so.is_cp_chantier,
+                so.is_ville_chantier
             FROM is_sale_order_planning isop inner join sale_order so on isop.order_id=so.id 
                                              inner join is_sale_order_planning_equipe_rel rel on isop.id=rel.order_id
                                              inner join is_equipe ie on rel.equipe_id=ie.id
@@ -1051,6 +1055,7 @@ class IsCreationPlanning(models.Model):
                 html+='</div>'
                 html+='<b>'+(row[1] or '')+'</b><br />'
                 html+=(row[2] or '')+'<br />'
+                html+=(row[10] or '')+' '+(row[11] or '')+' - '+(row[12] or '')+' '+(row[13] or '')+'<br />'
                 html+=(row[3] or '')+' - '+(row[4] or '')+'<br />'
                 html+=(row[5] or '')
                 chantiers.append(Markup(html))
