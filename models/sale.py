@@ -1600,6 +1600,40 @@ class IsChantierDocument(models.Model):
     commentaire      = fields.Char('Commentaire')
     piece_jointe_ids = fields.Many2many('ir.attachment', 'is_chantier_document_attachment_rel', 'document_id', 'attachment_id', 'Pièces jointes')
 
+    def _update_attachments_res_id(self):
+        """Met à jour res_model et res_id via SQL pour tous les attachments liés"""
+        for rec in self:
+            self._cr.execute("""
+                UPDATE ir_attachment 
+                SET res_model = %s, res_id = %s
+                WHERE id IN (
+                    SELECT attachment_id 
+                    FROM is_chantier_document_attachment_rel 
+                    WHERE document_id = %s
+                )
+            """, (rec._name, rec.id, rec.id))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(IsChantierDocument, self).create(vals_list)
+        records._update_attachments_res_id()
+        return records
+
+    def write(self, vals):
+        res = super(IsChantierDocument, self).write(vals)
+        if 'piece_jointe_ids' in vals:
+            self._update_attachments_res_id()
+        return res
+
+
+# Pour corriger les données existantes :
+
+# UPDATE ir_attachment ia
+# SET res_model = 'is.chantier.document', res_id = rel.document_id
+# FROM is_chantier_document_attachment_rel rel
+# WHERE ia.id = rel.attachment_id;
+
+
 
 class IsChantier(models.Model):
     _name='is.chantier'
@@ -1622,13 +1656,25 @@ class IsChantier(models.Model):
     informations      = fields.Text(u'Informations diverses', readonly=True)
     piece_jointe_ids  = fields.Many2many('ir.attachment', 'is_chantier_piece_jointe_attachment_rel', 'is_chantier_id', 'attachment_id', u'Pièces jointes', readonly=True)
 
-    piece_jointe_commande_ids     = fields.Many2many('ir.attachment', u'Pièces jointes commande', compute="_compute_piece_jointe_commande_ids")
+    piece_jointe_commande_ids     = fields.Many2many('ir.attachment', string=u'Pièces jointes commande', compute="_compute_piece_jointe_commande_ids")
 
     piece_jointe_chantier_ids     = fields.Many2many('ir.attachment', 'is_chantier_piece_jointe_chantier_attachment_rel', 'is_chantier_id', 'attachment_id', u'Pièces jointes chantier')
     piece_jointe_chantier_ids_readonly = fields.Boolean('Pièces jointes commande vsb', compute="_compute_piece_jointe_chantier_ids_readonly")
 
     fin_chantier_ids  = fields.Many2many('ir.attachment', 'is_chantier_fin_chantier_attachment_rel', 'is_chantier_id', 'attachment_id', 'Autres documents de fin de chantier')
     fin_chantier_document = fields.One2many('is.chantier.document', 'chantier_id', "Documents de fin de chantier")
+
+
+    @api.depends('order_id')
+    def _compute_piece_jointe_commande_ids(self):
+        for obj in self:
+            ids=[]
+            for attachment in obj.sudo().order_id.is_piece_jointe_ids:
+                # Changer le res_id et le res_model de la piece jointe pour que l'utilisateur puisse y accèder
+                attachment.sudo().res_id=obj.id
+                attachment.sudo().res_model=obj._name
+                ids.append(attachment.id)
+            obj.piece_jointe_commande_ids = [(6,0,ids)]
 
 
     @api.depends('order_id','order_id.write_date','order_id.is_planning_ids')
@@ -1660,15 +1706,3 @@ class IsChantier(models.Model):
             if self.env.user.id in chef_secteur_ids:
                 readonly=False
             obj.piece_jointe_chantier_ids_readonly = readonly
-
-
-    @api.depends('order_id')
-    def _compute_piece_jointe_commande_ids(self):
-        for obj in self:
-            ids=[]
-            for attachment in obj.sudo().order_id.is_piece_jointe_ids:
-                #TODO : Je dois changer le res_id et le res_model de la piece jointe pour que l'utilisateur puisse y accèder
-                attachment.sudo().res_id=obj.id
-                attachment.sudo().res_model=obj._name
-                ids.append(attachment.id)
-            obj.piece_jointe_commande_ids = [(6,0,ids)]

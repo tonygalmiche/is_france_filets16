@@ -1032,13 +1032,13 @@
                             </tree>
                         </field>
                         <group string="Pièces jointes commande" attrs="{'invisible': [('piece_jointe_commande_ids', '=', [])]}">
-                            <!-- <field name="piece_jointe_ids" nolabel="1" widget="many2many_binary"/> -->
-                            <field name="piece_jointe_commande_ids" nolabel="1" widget="many2many_binary"/>
+                            <field name="piece_jointe_commande_ids" widget="many2many_binary"/>
                         </group>
+
                         <group string="Pièces jointes chantier">
                             <field name="piece_jointe_chantier_ids_readonly" invisible="1"/>
                             <field 
-                                name="piece_jointe_chantier_ids" nolabel="1" 
+                                name="piece_jointe_chantier_ids"
                                 widget="many2many_binary" 
                                 attrs="{'readonly': [('piece_jointe_chantier_ids_readonly', '=', True)]}"
                             />
