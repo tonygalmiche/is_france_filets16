@@ -116,7 +116,7 @@
 
 
     <!-- Accès aux pièces jointes des documents de chantier -->
-    <record id="ir_attachment_chantier_document_access" model="ir.rule">
+    <!-- <record id="ir_attachment_chantier_document_access" model="ir.rule">
         <field name="name">Accès aux pièces jointes des documents de chantier</field>
         <field name="model_id" ref="base.model_ir_attachment"/>
         <field name="domain_force">[('res_model', '=', 'is.chantier.document')]</field>
@@ -125,10 +125,10 @@
         <field name="perm_read"   eval="1" />
         <field name="perm_write"  eval="1" />
         <field name="perm_unlink" eval="1" />
-    </record>
+    </record> -->
 
     <!-- Accès aux pièces jointes des chantiers -->
-    <record id="ir_attachment_chantier_access" model="ir.rule">
+    <!-- <record id="ir_attachment_chantier_access" model="ir.rule">
         <field name="name">Accès aux pièces jointes des chantiers</field>
         <field name="model_id" ref="base.model_ir_attachment"/>
         <field name="domain_force">[('res_model', '=', 'is.chantier')]</field>
@@ -137,10 +137,10 @@
         <field name="perm_read"   eval="1" />
         <field name="perm_write"  eval="1" />
         <field name="perm_unlink" eval="1" />
-    </record>
+    </record> -->
 
     <!-- Accès aux pièces jointes des commandes -->
-    <record id="ir_attachment_sale_order_access" model="ir.rule">
+    <!-- <record id="ir_attachment_sale_order_access" model="ir.rule">
         <field name="name">Accès aux pièces jointes des commandes</field>
         <field name="model_id" ref="base.model_ir_attachment"/>
         <field name="domain_force">[('res_model', '=', 'sale.order')]</field>
@@ -149,6 +149,6 @@
         <field name="perm_read"   eval="1" />
         <field name="perm_write"  eval="1" />
         <field name="perm_unlink" eval="1" />
-    </record>
+    </record> -->
 
 </odoo>
