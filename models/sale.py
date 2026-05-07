@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from odoo import api, fields, models, tools  # type: ignore
 from datetime import datetime, timedelta     # type: ignore
 from odoo.exceptions import UserError        # type: ignore
@@ -1556,6 +1557,35 @@ class IsChantierPlanning(models.Model):
             obj.sudo().sale_order_planning_id.pv_realise=obj.pv_realise
             if 'realisation' in vals:
                 obj.sudo().sale_order_planning_id.realisation=vals['realisation']
+        # Envoi du PV vers Akyos si pv_realise vient d'être renseigné
+        if 'etat_mailles' in vals or 'reprise_mailles' in vals or 'point_encrage' in vals or 'jointement' in vals or 'tension_filets' in vals:
+            for obj in self:
+                if obj.pv_realise:
+                    try:
+                        chantier = obj.chantier_id
+                        chantier_name = chantier.name or ''
+                        pdf_content, _report_type = obj.env['ir.actions.report']._render_qweb_pdf(
+                            'is_france_filets16.is_pv_reception_reports', obj.ids
+                        )
+                        file_name = "PV-%s.pdf" % chantier_name
+                        company = obj.env.company
+                        payload = company.send_document_to_akyos(
+                            doc_type='pv',
+                            external_id=chantier_name,
+                            chantier_id=chantier_name,
+                            pdf_content=pdf_content,
+                            file_name=file_name,
+                        )
+                        _logger.info("Akyos PV envoyé : %s", chantier_name)
+                        obj.chantier_id.order_id.sudo().message_post(
+                            body=Markup("<b>PV de réception envoyé vers Akyos</b><br/><pre>%s</pre>") % json.dumps(payload, indent=2, ensure_ascii=False),
+                            attachments=[(file_name, pdf_content)],
+                        )
+                    except Exception as e:
+                        _logger.error("Akyos erreur envoi PV %s : %s", obj.id, str(e))
+                        obj.chantier_id.order_id.sudo().message_post(
+                            body="Erreur envoi PV Akyos : %s" % str(e)
+                        )
         return res
 
 

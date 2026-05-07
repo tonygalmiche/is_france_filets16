@@ -23,6 +23,10 @@
                             <field name="is_sms_message"/>
                             <field name="is_sms_mobile"/>
                         </group>
+                        <group string="Akyos">
+                            <field name="is_akyos_url"/>
+                            <field name="is_akyos_key" password="True"/>
+                        </group>
                     </page>
                 </notebook>
             </field>
